@@ -1,6 +1,5 @@
 ﻿using SeleniumNodeRunner.Service;
 using System;
-using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -36,11 +35,9 @@ namespace SeleniumNodeRunner
 
 		private void Form1_Load(object sender, EventArgs e)
 		{
-			//SeleniumServer.Run(this.textBox1, this);
-			textBox1.Text = "hahahaa";
-
 			CtxMenuNotifyIcon = new ContextMenu();
-			CtxMenuNotifyIcon.MenuItems.Add("Open", (s, ev) => {
+			CtxMenuNotifyIcon.MenuItems.Add("Open", (s, ev) =>
+			{
 				this.Show();
 				WindowState = FormWindowState.Normal;
 			});
@@ -54,7 +51,7 @@ namespace SeleniumNodeRunner
 
 		private void InputFormsToggle()
 		{
-			if(InputFormToggle == true)
+			if (InputFormToggle == true)
 			{
 				txtBox_ChromeDriver.Enabled = false;
 				txtBox_hubaddress.Enabled = false;
@@ -65,7 +62,8 @@ namespace SeleniumNodeRunner
 
 				InputFormToggle = false;
 
-			} else
+			}
+			else
 			{
 				txtBox_ChromeDriver.Enabled = true;
 				txtBox_hubaddress.Enabled = true;
@@ -76,7 +74,7 @@ namespace SeleniumNodeRunner
 
 				InputFormToggle = true;
 			}
-			
+
 		}
 
 		private void Form1_Resize(object sender, EventArgs e)
@@ -105,14 +103,19 @@ namespace SeleniumNodeRunner
 		{
 			Button btnStartStop = (Button)sender;
 
-			if(btnStartStop.Text == "Start")
+			if (btnStartStop.Text == "Start")
 			{
-				seleniumServer.Run((output) => {
-					textBox1.Invoke((Action)delegate
+				seleniumServer.Run((output) =>
+				{
+					if (output != null)
+					{
+						textBox1.Invoke((Action)delegate
 						{
 							textBox1.AppendText(output);
+							textBox1.AppendText(Environment.NewLine);
 						}
 					);
+					}
 				});
 
 				btnStartStop.Text = "Stop";
@@ -120,7 +123,7 @@ namespace SeleniumNodeRunner
 				toolStripStatusLabel1.ForeColor = Color.Green;
 
 				InputFormsToggle();
-			} 
+			}
 			else if (btnStartStop.Text == "Stop")
 			{
 				seleniumServer.Stop();
@@ -128,9 +131,15 @@ namespace SeleniumNodeRunner
 				toolStripStatusLabel1.Text = "🔴 Offline";
 				toolStripStatusLabel1.ForeColor = Color.Red;
 
+				textBox1.AppendText(Environment.NewLine);
+				textBox1.AppendText("========================================");
+				textBox1.AppendText(Environment.NewLine);
+				textBox1.AppendText(Environment.NewLine);
+
 				InputFormsToggle();
 
-			} else { }
+			}
+			else { }
 		}
 
 		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

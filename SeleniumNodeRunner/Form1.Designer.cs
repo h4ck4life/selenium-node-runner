@@ -235,16 +235,17 @@
 			// 
 			// textBox1
 			// 
-			this.textBox1.BackColor = System.Drawing.SystemColors.Control;
+			this.textBox1.BackColor = System.Drawing.Color.Black;
 			this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			this.textBox1.ForeColor = System.Drawing.SystemColors.WindowText;
+			this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.textBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
 			this.textBox1.Location = new System.Drawing.Point(6, 19);
 			this.textBox1.Multiline = true;
 			this.textBox1.Name = "textBox1";
 			this.textBox1.ReadOnly = true;
+			this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.textBox1.Size = new System.Drawing.Size(630, 222);
 			this.textBox1.TabIndex = 0;
-			this.textBox1.Text = "java console output here";
 			// 
 			// Form1
 			// 
