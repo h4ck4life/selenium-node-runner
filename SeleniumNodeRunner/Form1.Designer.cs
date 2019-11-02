@@ -76,7 +76,7 @@ namespace SeleniumNodeRunner
 			// 
 			this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1});
-			this.statusStrip1.Location = new System.Drawing.Point(0, 315);
+			this.statusStrip1.Location = new System.Drawing.Point(0, 275);
 			this.statusStrip1.Name = "statusStrip1";
 			this.statusStrip1.Size = new System.Drawing.Size(692, 22);
 			this.statusStrip1.TabIndex = 0;
@@ -106,7 +106,7 @@ namespace SeleniumNodeRunner
 			this.groupBox1.Controls.Add(this.button1);
 			this.groupBox1.Location = new System.Drawing.Point(3, 3);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(675, 279);
+			this.groupBox1.Size = new System.Drawing.Size(675, 235);
 			this.groupBox1.TabIndex = 1;
 			this.groupBox1.TabStop = false;
 			// 
@@ -246,7 +246,7 @@ namespace SeleniumNodeRunner
 			// 
 			this.label4.AutoSize = true;
 			this.label4.ForeColor = System.Drawing.SystemColors.AppWorkspace;
-			this.label4.Location = new System.Drawing.Point(603, 320);
+			this.label4.Location = new System.Drawing.Point(609, 279);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(65, 13);
 			this.label4.TabIndex = 7;
@@ -257,7 +257,7 @@ namespace SeleniumNodeRunner
 			this.groupBox2.Controls.Add(this.textBox1);
 			this.groupBox2.Location = new System.Drawing.Point(6, 0);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(672, 282);
+			this.groupBox2.Size = new System.Drawing.Size(672, 238);
 			this.groupBox2.TabIndex = 2;
 			this.groupBox2.TabStop = false;
 			// 
@@ -272,7 +272,7 @@ namespace SeleniumNodeRunner
 			this.textBox1.Name = "textBox1";
 			this.textBox1.ReadOnly = true;
 			this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.textBox1.Size = new System.Drawing.Size(672, 276);
+			this.textBox1.Size = new System.Drawing.Size(672, 232);
 			this.textBox1.TabIndex = 0;
 			// 
 			// tabControl1
@@ -282,7 +282,7 @@ namespace SeleniumNodeRunner
 			this.tabControl1.Location = new System.Drawing.Point(0, 2);
 			this.tabControl1.Name = "tabControl1";
 			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(692, 314);
+			this.tabControl1.Size = new System.Drawing.Size(692, 270);
 			this.tabControl1.TabIndex = 11;
 			// 
 			// tabPage1
@@ -291,7 +291,7 @@ namespace SeleniumNodeRunner
 			this.tabPage1.Location = new System.Drawing.Point(4, 22);
 			this.tabPage1.Name = "tabPage1";
 			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage1.Size = new System.Drawing.Size(684, 288);
+			this.tabPage1.Size = new System.Drawing.Size(684, 244);
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "Configuration";
 			this.tabPage1.UseVisualStyleBackColor = true;
@@ -302,7 +302,7 @@ namespace SeleniumNodeRunner
 			this.tabPage2.Location = new System.Drawing.Point(4, 22);
 			this.tabPage2.Name = "tabPage2";
 			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage2.Size = new System.Drawing.Size(684, 288);
+			this.tabPage2.Size = new System.Drawing.Size(684, 244);
 			this.tabPage2.TabIndex = 1;
 			this.tabPage2.Text = "Output";
 			this.tabPage2.UseVisualStyleBackColor = true;
@@ -311,7 +311,7 @@ namespace SeleniumNodeRunner
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(692, 337);
+			this.ClientSize = new System.Drawing.Size(692, 297);
 			this.Controls.Add(this.tabControl1);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.statusStrip1);

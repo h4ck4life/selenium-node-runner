@@ -161,7 +161,7 @@ namespace SeleniumNodeRunner
 				toolStripStatusLabel1.ForeColor = Color.Red;
 
 				textBox1.AppendText(Environment.NewLine);
-				textBox1.AppendText("========================================");
+				textBox1.AppendText("==================STOPPED===================");
 				textBox1.AppendText(Environment.NewLine);
 				textBox1.AppendText(Environment.NewLine);
 
