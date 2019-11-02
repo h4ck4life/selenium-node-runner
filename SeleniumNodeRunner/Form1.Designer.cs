@@ -1,4 +1,6 @@
-﻿namespace SeleniumNodeRunner
+﻿using System.Windows.Forms;
+
+namespace SeleniumNodeRunner
 {
 	partial class Form1
 	{
@@ -34,6 +36,8 @@
 			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
 			this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.label5 = new System.Windows.Forms.Label();
+			this.comboBox1 = new System.Windows.Forms.ComboBox();
 			this.linkLabel2 = new System.Windows.Forms.LinkLabel();
 			this.linkLabel1 = new System.Windows.Forms.LinkLabel();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -49,10 +53,16 @@
 			this.label4 = new System.Windows.Forms.Label();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.textBox1 = new System.Windows.Forms.TextBox();
+			this.tabControl1 = new System.Windows.Forms.TabControl();
+			this.tabPage1 = new System.Windows.Forms.TabPage();
+			this.tabPage2 = new System.Windows.Forms.TabPage();
 			this.statusStrip1.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.groupBox3.SuspendLayout();
 			this.groupBox2.SuspendLayout();
+			this.tabControl1.SuspendLayout();
+			this.tabPage1.SuspendLayout();
+			this.tabPage2.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// notifyIcon1
@@ -66,9 +76,9 @@
 			// 
 			this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1});
-			this.statusStrip1.Location = new System.Drawing.Point(0, 464);
+			this.statusStrip1.Location = new System.Drawing.Point(0, 315);
 			this.statusStrip1.Name = "statusStrip1";
-			this.statusStrip1.Size = new System.Drawing.Size(666, 22);
+			this.statusStrip1.Size = new System.Drawing.Size(692, 22);
 			this.statusStrip1.TabIndex = 0;
 			this.statusStrip1.Text = "statusStrip1";
 			// 
@@ -82,6 +92,8 @@
 			// 
 			// groupBox1
 			// 
+			this.groupBox1.Controls.Add(this.label5);
+			this.groupBox1.Controls.Add(this.comboBox1);
 			this.groupBox1.Controls.Add(this.linkLabel2);
 			this.groupBox1.Controls.Add(this.linkLabel1);
 			this.groupBox1.Controls.Add(this.groupBox3);
@@ -92,12 +104,29 @@
 			this.groupBox1.Controls.Add(this.label1);
 			this.groupBox1.Controls.Add(this.txtBox_ChromeDriver);
 			this.groupBox1.Controls.Add(this.button1);
-			this.groupBox1.Location = new System.Drawing.Point(12, 12);
+			this.groupBox1.Location = new System.Drawing.Point(3, 3);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(642, 188);
+			this.groupBox1.Size = new System.Drawing.Size(675, 279);
 			this.groupBox1.TabIndex = 1;
 			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = "Configurations";
+			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(16, 177);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(155, 13);
+			this.label5.TabIndex = 13;
+			this.label5.Text = "Select this machine IP address:";
+			// 
+			// comboBox1
+			// 
+			this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboBox1.FormattingEnabled = true;
+			this.comboBox1.Location = new System.Drawing.Point(19, 193);
+			this.comboBox1.Name = "comboBox1";
+			this.comboBox1.Size = new System.Drawing.Size(391, 21);
+			this.comboBox1.TabIndex = 12;
 			// 
 			// linkLabel2
 			// 
@@ -217,7 +246,7 @@
 			// 
 			this.label4.AutoSize = true;
 			this.label4.ForeColor = System.Drawing.SystemColors.AppWorkspace;
-			this.label4.Location = new System.Drawing.Point(580, 469);
+			this.label4.Location = new System.Drawing.Point(603, 320);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(65, 13);
 			this.label4.TabIndex = 7;
@@ -226,12 +255,11 @@
 			// groupBox2
 			// 
 			this.groupBox2.Controls.Add(this.textBox1);
-			this.groupBox2.Location = new System.Drawing.Point(12, 206);
+			this.groupBox2.Location = new System.Drawing.Point(6, 0);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(642, 244);
+			this.groupBox2.Size = new System.Drawing.Size(672, 282);
 			this.groupBox2.TabIndex = 2;
 			this.groupBox2.TabStop = false;
-			this.groupBox2.Text = "Output";
 			// 
 			// textBox1
 			// 
@@ -239,22 +267,53 @@
 			this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.textBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-			this.textBox1.Location = new System.Drawing.Point(6, 19);
+			this.textBox1.Location = new System.Drawing.Point(0, 6);
 			this.textBox1.Multiline = true;
 			this.textBox1.Name = "textBox1";
 			this.textBox1.ReadOnly = true;
 			this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.textBox1.Size = new System.Drawing.Size(630, 222);
+			this.textBox1.Size = new System.Drawing.Size(672, 276);
 			this.textBox1.TabIndex = 0;
+			// 
+			// tabControl1
+			// 
+			this.tabControl1.Controls.Add(this.tabPage1);
+			this.tabControl1.Controls.Add(this.tabPage2);
+			this.tabControl1.Location = new System.Drawing.Point(0, 2);
+			this.tabControl1.Name = "tabControl1";
+			this.tabControl1.SelectedIndex = 0;
+			this.tabControl1.Size = new System.Drawing.Size(692, 314);
+			this.tabControl1.TabIndex = 11;
+			// 
+			// tabPage1
+			// 
+			this.tabPage1.Controls.Add(this.groupBox1);
+			this.tabPage1.Location = new System.Drawing.Point(4, 22);
+			this.tabPage1.Name = "tabPage1";
+			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage1.Size = new System.Drawing.Size(684, 288);
+			this.tabPage1.TabIndex = 0;
+			this.tabPage1.Text = "Configuration";
+			this.tabPage1.UseVisualStyleBackColor = true;
+			// 
+			// tabPage2
+			// 
+			this.tabPage2.Controls.Add(this.groupBox2);
+			this.tabPage2.Location = new System.Drawing.Point(4, 22);
+			this.tabPage2.Name = "tabPage2";
+			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage2.Size = new System.Drawing.Size(684, 288);
+			this.tabPage2.TabIndex = 1;
+			this.tabPage2.Text = "Output";
+			this.tabPage2.UseVisualStyleBackColor = true;
 			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(666, 486);
+			this.ClientSize = new System.Drawing.Size(692, 337);
+			this.Controls.Add(this.tabControl1);
 			this.Controls.Add(this.label4);
-			this.Controls.Add(this.groupBox2);
-			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.statusStrip1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -271,6 +330,9 @@
 			this.groupBox3.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
+			this.tabControl1.ResumeLayout(false);
+			this.tabPage1.ResumeLayout(false);
+			this.tabPage2.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -297,6 +359,11 @@
 		private System.Windows.Forms.CheckBox checkBox2;
 		private System.Windows.Forms.LinkLabel linkLabel1;
 		private System.Windows.Forms.LinkLabel linkLabel2;
+		private System.Windows.Forms.TabControl tabControl1;
+		private System.Windows.Forms.TabPage tabPage1;
+		private System.Windows.Forms.TabPage tabPage2;
+		private System.Windows.Forms.ComboBox comboBox1;
+		private System.Windows.Forms.Label label5;
 	}
 }
 

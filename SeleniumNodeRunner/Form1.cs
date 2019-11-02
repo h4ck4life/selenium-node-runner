@@ -1,6 +1,8 @@
 ﻿using SeleniumNodeRunner.Service;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -17,11 +19,6 @@ namespace SeleniumNodeRunner
 		public Form1()
 		{
 			InitializeComponent();
-			seleniumServer = new SeleniumServer(
-				txtBox_ChromeDriver.Text,
-				txtBox_seleniumjar.Text,
-				txtBox_hubaddress.Text
-			);
 
 			// Set new state to prevent system sleep
 			fPreviousExecutionState = NativeMethods.SetThreadExecutionState(
@@ -35,6 +32,9 @@ namespace SeleniumNodeRunner
 
 		private void Form1_Load(object sender, EventArgs e)
 		{
+
+			LoadLocalIPAddress();
+
 			CtxMenuNotifyIcon = new ContextMenu();
 			CtxMenuNotifyIcon.MenuItems.Add("Open", (s, ev) =>
 			{
@@ -42,11 +42,36 @@ namespace SeleniumNodeRunner
 				WindowState = FormWindowState.Normal;
 			});
 			CtxMenuNotifyIcon.MenuItems.Add("Exit", (s, ev) => Application.Exit());
+
+			seleniumServer = new SeleniumServer(
+				txtBox_ChromeDriver.Text,
+				txtBox_seleniumjar.Text,
+				txtBox_hubaddress.Text
+			);
 		}
 
 		protected override void OnFormClosing(FormClosingEventArgs e)
 		{
 			seleniumServer.Stop(button1.Text);
+		}
+
+		private void LoadLocalIPAddress()
+		{
+			List<string> items = new List<string>();
+
+			foreach (NetworkInterface netInterface in NetworkInterface.GetAllNetworkInterfaces())
+			{
+				IPInterfaceProperties ipProps = netInterface.GetIPProperties();
+				foreach (UnicastIPAddressInformation addr in ipProps.UnicastAddresses)
+				{
+					if (!addr.IsDnsEligible)
+					{
+						continue;
+					}
+					items.Add(addr.Address.ToString());
+				}
+			}
+			comboBox1.DataSource = items;
 		}
 
 		private void InputFormsToggle()
@@ -56,6 +81,8 @@ namespace SeleniumNodeRunner
 				txtBox_ChromeDriver.Enabled = false;
 				txtBox_hubaddress.Enabled = false;
 				txtBox_seleniumjar.Enabled = false;
+
+				comboBox1.Enabled = false;
 
 				checkBox1.Enabled = false;
 				checkBox2.Enabled = false;
@@ -68,6 +95,8 @@ namespace SeleniumNodeRunner
 				txtBox_ChromeDriver.Enabled = true;
 				txtBox_hubaddress.Enabled = true;
 				txtBox_seleniumjar.Enabled = true;
+
+				comboBox1.Enabled = true;
 
 				checkBox1.Enabled = true;
 				checkBox2.Enabled = true;
