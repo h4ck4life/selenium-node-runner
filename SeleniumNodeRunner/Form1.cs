@@ -44,9 +44,10 @@ namespace SeleniumNodeRunner
 			CtxMenuNotifyIcon.MenuItems.Add("Exit", (s, ev) => Application.Exit());
 
 			seleniumServer = new SeleniumServer(
-				txtBox_ChromeDriver.Text,
-				txtBox_seleniumjar.Text,
-				txtBox_hubaddress.Text
+				txtBox_ChromeDriver,
+				txtBox_seleniumjar,
+				txtBox_hubaddress,
+				comboBox1
 			);
 		}
 

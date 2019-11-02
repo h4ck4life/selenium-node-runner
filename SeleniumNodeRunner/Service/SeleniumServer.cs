@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace SeleniumNodeRunner.Service
 {
@@ -8,19 +9,22 @@ namespace SeleniumNodeRunner.Service
 	{
 		private Process process;
 		private BackgroundWorker worker;
-		private String chromeDrivePath;
-		private String seleniumServerPath;
-		private String seleniumHubAddress;
+		private TextBox chromeDrivePath;
+		private TextBox seleniumServerPath;
+		private TextBox seleniumHubAddress;
+		private ComboBox localIPAddress;
 
 		public SeleniumServer(
-			String chromeDrivePath,
-			String seleniumServerPath,
-			String seleniumHubAddress
+			TextBox chromeDrivePath,
+			TextBox seleniumServerPath,
+			TextBox seleniumHubAddress,
+			ComboBox localIPAddress
 		)
 		{
 			this.chromeDrivePath = chromeDrivePath;
 			this.seleniumServerPath = seleniumServerPath;
 			this.seleniumHubAddress = seleniumHubAddress;
+			this.localIPAddress = localIPAddress;
 		}
 
 		public void Run(Action<String> callback)
@@ -30,7 +34,7 @@ namespace SeleniumNodeRunner.Service
 			process.StartInfo.RedirectStandardOutput = true;
 			process.StartInfo.RedirectStandardError = true;
 
-			process.StartInfo.Arguments = "\"-Dwebdriver.chrome.driver=C:\\Users\\mohd_alif_abdul_aziz\\Downloads\\chromedriver_win32\\chromedriver.exe\" -jar C:\\Users\\mohd_alif_abdul_aziz\\Downloads\\selenium-server-standalone-3.14.0.jar -role webdriver -hub http://10.108.5.83:4444/grid/register -host 10.93.144.98";
+			process.StartInfo.Arguments = "\"-Dwebdriver.chrome.driver="+ this.chromeDrivePath.Text + "\" -jar " + this.seleniumServerPath.Text + " -role webdriver -hub http://" + this.seleniumHubAddress.Text + ":4444/grid/register -host "+ this.localIPAddress.SelectedItem;
 
 			process.StartInfo.CreateNoWindow = true;
 			//process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
