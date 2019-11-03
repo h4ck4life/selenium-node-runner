@@ -69,8 +69,19 @@ namespace SeleniumNodeRunner
             checkBox2.Checked = Properties.Settings.Default.AutoRun;
         }
 
-        private void SaveSettings()
+        private bool SaveSettings()
         {
+
+            if (txtBox_ChromeDriver.Text == "" || txtBox_seleniumjar.Text == "" || txtBox_hubaddress.Text == "")
+            {
+                MessageBox.Show("Please set all the configurations",
+                    "Info",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                txtBox_ChromeDriver.Focus();
+                return false;
+            }
+
             Properties.Settings.Default.ChromeDriver = txtBox_ChromeDriver.Text;
             Properties.Settings.Default.SeleniumJar = txtBox_seleniumjar.Text;
             Properties.Settings.Default.HubAddress = txtBox_hubaddress.Text;
@@ -79,6 +90,8 @@ namespace SeleniumNodeRunner
             Properties.Settings.Default.AutoRun = checkBox2.Checked;
 
             Properties.Settings.Default.Save();
+
+            return true;
         }
 
         private void LoadLocalIPAddress()
@@ -158,28 +171,30 @@ namespace SeleniumNodeRunner
             if (btnStartStop.Text == "Start")
             {
 
-                SaveSettings();
-
-                tabControl1.SelectTab(1);
-
-                seleniumServer.Run((output) =>
+                if (SaveSettings())
                 {
-                    if (output != null)
+                    tabControl1.SelectTab(1);
+
+                    seleniumServer.Run((output) =>
                     {
-                        textBox1.Invoke((Action)delegate
+                        if (output != null)
                         {
-                            textBox1.AppendText(output);
-                            textBox1.AppendText(Environment.NewLine);
+                            textBox1.Invoke((Action)delegate
+                            {
+                                textBox1.AppendText(output);
+                                textBox1.AppendText(Environment.NewLine);
+                            }
+                        );
                         }
-                    );
-                    }
-                });
+                    });
 
-                btnStartStop.Text = "Stop";
-                toolStripStatusLabel1.Text = "✅ Online";
-                toolStripStatusLabel1.ForeColor = Color.Green;
+                    btnStartStop.Text = "Stop";
+                    toolStripStatusLabel1.Text = "✅ Online";
+                    toolStripStatusLabel1.ForeColor = Color.Green;
 
-                InputFormsToggle();
+                    InputFormsToggle();
+
+                }
             }
             else if (btnStartStop.Text == "Stop")
             {
