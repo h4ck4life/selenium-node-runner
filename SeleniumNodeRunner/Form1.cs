@@ -35,6 +35,7 @@ namespace SeleniumNodeRunner
         private void Form1_Load(object sender, EventArgs e)
         {
 
+            LoadSettings();
             LoadLocalIPAddress();
 
             CtxMenuNotifyIcon = new ContextMenu();
@@ -58,13 +59,24 @@ namespace SeleniumNodeRunner
             seleniumServer.Stop(button1.Text);
         }
 
+        private void LoadSettings()
+        {
+            txtBox_ChromeDriver.Text = Properties.Settings.Default.ChromeDriver;
+            txtBox_seleniumjar.Text = Properties.Settings.Default.SeleniumJar;
+            txtBox_hubaddress.Text = Properties.Settings.Default.HubAddress;
+
+            checkBox1.Checked = Properties.Settings.Default.RunAsHub;
+            checkBox2.Checked = Properties.Settings.Default.AutoRun;
+        }
+
         private void SaveSettings()
         {
-            Properties.Settings.Default["ChromeDriver"] = txtBox_ChromeDriver.Text;
-            Properties.Settings.Default["SeleniumJar"] = txtBox_seleniumjar.Text;
-            Properties.Settings.Default["HubAddress"] = txtBox_hubaddress.Text;
-            Properties.Settings.Default["RunAsHub"] = checkBox1.Checked;
-            Properties.Settings.Default["AutoRun"] = checkBox2.Checked;
+            Properties.Settings.Default.ChromeDriver = txtBox_ChromeDriver.Text;
+            Properties.Settings.Default.SeleniumJar = txtBox_seleniumjar.Text;
+            Properties.Settings.Default.HubAddress = txtBox_hubaddress.Text;
+
+            Properties.Settings.Default.RunAsHub = checkBox1.Checked;
+            Properties.Settings.Default.AutoRun = checkBox2.Checked;
 
             Properties.Settings.Default.Save();
         }

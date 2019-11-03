@@ -88,7 +88,7 @@ namespace SeleniumNodeRunner.Service
             catch (Exception e)
             {
 
-                MessageBox.Show("Something wrong happened. " + e.Message);
+                //MessageBox.Show("Something wrong happened. " + e.Message);
             }
 		}
 
@@ -106,7 +106,7 @@ namespace SeleniumNodeRunner.Service
             catch (Exception e)
             {
 
-                MessageBox.Show("Something wrong happened. " + e.Message);
+                //MessageBox.Show("Something wrong happened. " + e.Message);
             }
 
 		}
