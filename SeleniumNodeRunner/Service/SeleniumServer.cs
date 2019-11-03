@@ -85,7 +85,7 @@ namespace SeleniumNodeRunner.Service
                 Process proc = Process.GetProcessById(process.Id, System.Environment.MachineName);
                 proc.Kill();
             }
-            catch (Exception e)
+            catch (Exception)
             {
 
                 //MessageBox.Show("Something wrong happened. " + e.Message);
@@ -103,7 +103,7 @@ namespace SeleniumNodeRunner.Service
                     proc.Kill();
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
 
                 //MessageBox.Show("Something wrong happened. " + e.Message);

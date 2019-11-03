@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="ChromeDriver" Type="System.String" Scope="User">
-      <Value Profile="(Default)">test</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="SeleniumJar" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
