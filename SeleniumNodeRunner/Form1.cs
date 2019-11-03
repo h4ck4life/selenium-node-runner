@@ -58,6 +58,17 @@ namespace SeleniumNodeRunner
             seleniumServer.Stop(button1.Text);
         }
 
+        private void SaveSettings()
+        {
+            Properties.Settings.Default["ChromeDriver"] = txtBox_ChromeDriver.Text;
+            Properties.Settings.Default["SeleniumJar"] = txtBox_seleniumjar.Text;
+            Properties.Settings.Default["HubAddress"] = txtBox_hubaddress.Text;
+            Properties.Settings.Default["RunAsHub"] = checkBox1.Checked;
+            Properties.Settings.Default["AutoRun"] = checkBox2.Checked;
+
+            Properties.Settings.Default.Save();
+        }
+
         private void LoadLocalIPAddress()
         {
             List<string> items = new List<string>();
@@ -134,6 +145,11 @@ namespace SeleniumNodeRunner
 
             if (btnStartStop.Text == "Start")
             {
+
+                SaveSettings();
+
+                tabControl1.SelectTab(1);
+
                 seleniumServer.Run((output) =>
                 {
                     if (output != null)

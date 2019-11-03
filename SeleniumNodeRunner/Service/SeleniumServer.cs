@@ -79,19 +79,36 @@ namespace SeleniumNodeRunner.Service
 
 		public void Stop()
 		{
-			worker.CancelAsync();
-			Process proc = Process.GetProcessById(process.Id, System.Environment.MachineName);
-			proc.Kill();
+            try
+            {
+                worker.CancelAsync();
+                Process proc = Process.GetProcessById(process.Id, System.Environment.MachineName);
+                proc.Kill();
+            }
+            catch (Exception e)
+            {
+
+                MessageBox.Show("Something wrong happened. " + e.Message);
+            }
 		}
 
 		public void Stop(String btnText)
 		{
-			if (btnText == "Stop")
-			{
-				worker.CancelAsync();
-				Process proc = Process.GetProcessById(process.Id, System.Environment.MachineName);
-				proc.Kill();
-			}
+            try
+            {
+                if (btnText == "Stop")
+                {
+                    worker.CancelAsync();
+                    Process proc = Process.GetProcessById(process.Id, System.Environment.MachineName);
+                    proc.Kill();
+                }
+            }
+            catch (Exception e)
+            {
+
+                MessageBox.Show("Something wrong happened. " + e.Message);
+            }
+
 		}
 	}
 }
