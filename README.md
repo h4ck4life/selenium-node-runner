@@ -1,7 +1,7 @@
 ### Selenium Node Runner
 GUI based wrapper for Selenium Grid node on Windows.
 
-* Run the application in background. Accessible in windows tray icon.
+* Run the application as **Selenium hub server** or **Selenium node webdriver** in background. Accessible in windows tray icon.
 * Simple wrapper configuration + Dependent programs are not hard coded. Use any versions as needed.
 
 ### Screenshots
