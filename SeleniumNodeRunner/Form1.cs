@@ -50,7 +50,8 @@ namespace SeleniumNodeRunner
                 txtBox_ChromeDriver,
                 txtBox_seleniumjar,
                 txtBox_hubaddress,
-                comboBox1
+                comboBox1,
+                checkBox1
             );
         }
 
@@ -121,7 +122,7 @@ namespace SeleniumNodeRunner
                 comboBox1.Enabled = false;
 
                 checkBox1.Enabled = false;
-                checkBox2.Enabled = false;
+                //checkBox2.Enabled = false;
 
                 InputFormToggle = false;
 
@@ -135,7 +136,7 @@ namespace SeleniumNodeRunner
                 comboBox1.Enabled = true;
 
                 checkBox1.Enabled = true;
-                checkBox2.Enabled = true;
+                //checkBox2.Enabled = true;
 
                 InputFormToggle = true;
             }
@@ -193,6 +194,7 @@ namespace SeleniumNodeRunner
                     toolStripStatusLabel1.ForeColor = Color.Green;
 
                     InputFormsToggle();
+                    toggle_enabled_hubAddress();
 
                 }
             }
@@ -209,6 +211,7 @@ namespace SeleniumNodeRunner
                 textBox1.AppendText(Environment.NewLine);
 
                 InputFormsToggle();
+                toggle_enabled_hubAddress();
 
             }
             else { }
@@ -222,6 +225,34 @@ namespace SeleniumNodeRunner
         private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             System.Diagnostics.Process.Start("http://selenium-release.storage.googleapis.com/index.html");
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox checkbox1_sender = (CheckBox)sender;
+
+            if (checkbox1_sender.Checked)
+            {
+                txtBox_hubaddress.Enabled = false;
+            }
+            else
+            {
+                txtBox_hubaddress.Enabled = true;
+            }
+        }
+
+        private void toggle_enabled_hubAddress()
+        {
+            if (checkBox1.Checked)
+            {
+                txtBox_hubaddress.Enabled = false;
+                this.Text = "Server - Selenium Node Runner";
+            }
+            else
+            {
+                txtBox_hubaddress.Enabled = true;
+                this.Text = "Client - Selenium Node Runner";
+            }
         }
     }
 

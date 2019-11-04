@@ -5,80 +5,85 @@ using System.Windows.Forms;
 
 namespace SeleniumNodeRunner.Service
 {
-	class SeleniumServer
-	{
-		private Process process;
-		private BackgroundWorker worker;
-		private TextBox chromeDrivePath;
-		private TextBox seleniumServerPath;
-		private TextBox seleniumHubAddress;
-		private ComboBox localIPAddress;
+    class SeleniumServer
+    {
+        private Process process;
+        private BackgroundWorker worker;
+        private TextBox chromeDrivePath;
+        private TextBox seleniumServerPath;
+        private TextBox seleniumHubAddress;
+        private ComboBox localIPAddress;
+        private CheckBox runAsHub;
 
-		public SeleniumServer(
-			TextBox chromeDrivePath,
-			TextBox seleniumServerPath,
-			TextBox seleniumHubAddress,
-			ComboBox localIPAddress
-		)
-		{
-			this.chromeDrivePath = chromeDrivePath;
-			this.seleniumServerPath = seleniumServerPath;
-			this.seleniumHubAddress = seleniumHubAddress;
-			this.localIPAddress = localIPAddress;
-		}
+        public SeleniumServer(
+            TextBox chromeDrivePath,
+            TextBox seleniumServerPath,
+            TextBox seleniumHubAddress,
+            ComboBox localIPAddress,
+            CheckBox runAsHub
+        )
+        {
+            this.chromeDrivePath = chromeDrivePath;
+            this.seleniumServerPath = seleniumServerPath;
+            this.seleniumHubAddress = seleniumHubAddress;
+            this.localIPAddress = localIPAddress;
+            this.runAsHub = runAsHub;
+        }
 
-		public void Run(Action<String> callback)
-		{
-			process = new Process();
-			process.StartInfo.UseShellExecute = false;
-			process.StartInfo.RedirectStandardOutput = true;
-			process.StartInfo.RedirectStandardError = true;
+        public void Run(Action<String> callback)
+        {
+            process = new Process();
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.RedirectStandardError = true;
 
-			process.StartInfo.Arguments = "\"-Dwebdriver.chrome.driver="+ this.chromeDrivePath.Text + "\" -jar " + this.seleniumServerPath.Text + " -role webdriver -hub http://" + this.seleniumHubAddress.Text + ":4444/grid/register -host "+ this.localIPAddress.SelectedItem;
+            process.StartInfo.Arguments = "\"-Dwebdriver.chrome.driver=" + this.chromeDrivePath.Text + "\" -jar " + this.seleniumServerPath.Text + " -role " + (runAsHub.Checked ? "hub" : "webdriver") + " -hub http://" + this.seleniumHubAddress.Text + " -host " + this.localIPAddress.SelectedItem;
 
-			process.StartInfo.CreateNoWindow = true;
-			//process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-			process.StartInfo.FileName = "java.exe";
+            process.StartInfo.Arguments = "\"-Dwebdriver.chrome.driver=" + this.chromeDrivePath.Text + "\" -jar " + this.seleniumServerPath.Text + " -role " + (runAsHub.Checked ? "hub" : "webdriver -hub " + this.seleniumHubAddress.Text) + " -host " + this.localIPAddress.SelectedItem;
 
-			process.ErrorDataReceived += (s, ev) =>
-			{
-				callback(ev.Data);
-			};
-			process.OutputDataReceived += Process_OutputDataReceived;
+            process.StartInfo.CreateNoWindow = true;
+            //process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            process.StartInfo.FileName = "java.exe";
 
-			worker = new BackgroundWorker();
-			worker.WorkerSupportsCancellation = true;
-			worker.DoWork += delegate
-			{
-				process.Start();
+            process.ErrorDataReceived += (s, ev) =>
+            {
+                callback(ev.Data);
+            };
+            process.OutputDataReceived += Process_OutputDataReceived;
 
-				process.BeginErrorReadLine();
-				process.BeginOutputReadLine();
+            worker = new BackgroundWorker();
+            worker.WorkerSupportsCancellation = true;
+            worker.DoWork += delegate
+            {
+                process.Start();
 
-				process.WaitForExit();
-			};
+                process.BeginErrorReadLine();
+                process.BeginOutputReadLine();
 
-			worker.RunWorkerCompleted += worker_RunWorkerCompleted;
-			worker.RunWorkerAsync();
-		}
+                process.WaitForExit();
+            };
 
-		private void Process_OutputDataReceived(object sender, DataReceivedEventArgs e)
-		{
-			//Console.WriteLine(e.Data);
-		}
+            worker.RunWorkerCompleted += worker_RunWorkerCompleted;
+            worker.RunWorkerAsync();
+        }
 
-		private void Process_ErrorDataReceived(object sender, DataReceivedEventArgs e)
-		{
-			Console.WriteLine(e.Data);
-		}
+        private void Process_OutputDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            //Console.WriteLine(e.Data);
+        }
 
-		void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-		{
-			//Do your thing o UI thread
-		}
+        private void Process_ErrorDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            Console.WriteLine(e.Data);
+        }
 
-		public void Stop()
-		{
+        void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            //Do your thing o UI thread
+        }
+
+        public void Stop()
+        {
             try
             {
                 worker.CancelAsync();
@@ -90,10 +95,10 @@ namespace SeleniumNodeRunner.Service
 
                 //MessageBox.Show("Something wrong happened. " + e.Message);
             }
-		}
+        }
 
-		public void Stop(String btnText)
-		{
+        public void Stop(String btnText)
+        {
             try
             {
                 if (btnText == "Stop")
@@ -109,6 +114,6 @@ namespace SeleniumNodeRunner.Service
                 //MessageBox.Show("Something wrong happened. " + e.Message);
             }
 
-		}
-	}
+        }
+    }
 }
