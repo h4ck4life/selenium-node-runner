@@ -1,5 +1,8 @@
 ### Selenium Node Runner
-GUI based wrapper for Selenium Grid node on Windows
+GUI based wrapper for Selenium Grid node on Windows.
+
+* Let the application continously run in background. Accessible in windows tray icon.
+* Simple wrapper configuration + Dependent programs are not hard coded. Use any versions as needed.
 
 ### Screenshots
 
