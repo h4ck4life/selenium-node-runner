@@ -3,18 +3,15 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Net;
-using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace SeleniumNodeRunner
 {
-	public partial class Form1 : Form
+    public partial class Form1 : Form
 	{
-
 		SeleniumServer seleniumServer;
-		private uint fPreviousExecutionState;
 		bool InputFormToggle = true;
 		ContextMenu CtxMenuNotifyIcon;
 
@@ -63,7 +60,6 @@ namespace SeleniumNodeRunner
 
 		private bool SaveSettings()
 		{
-
 			if (txtBox_ChromeDriver.Text == "" || txtBox_seleniumjar.Text == "" || txtBox_hubaddress.Text == "")
 			{
 				MessageBox.Show("Please set all the configurations",
@@ -162,7 +158,6 @@ namespace SeleniumNodeRunner
 
 			if (btnStartStop.Text == "Start")
 			{
-
 				if (SaveSettings())
 				{
 					tabControl1.SelectTab(1);
@@ -186,7 +181,6 @@ namespace SeleniumNodeRunner
 
 					InputFormsToggle();
 					toggle_enabled_hubAddress();
-
 				}
 			}
 			else if (btnStartStop.Text == "Stop")

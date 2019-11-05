@@ -56,6 +56,7 @@ namespace SeleniumNodeRunner
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
             this.statusStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -280,6 +281,7 @@ namespace SeleniumNodeRunner
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Location = new System.Drawing.Point(0, 2);
             this.tabControl1.Name = "tabControl1";
@@ -308,6 +310,16 @@ namespace SeleniumNodeRunner
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Output";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // tabPage3
+            // 
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(684, 244);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Advance";
+            this.tabPage3.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
@@ -366,6 +378,7 @@ namespace SeleniumNodeRunner
 		private System.Windows.Forms.TabPage tabPage2;
 		private System.Windows.Forms.ComboBox comboBox1;
 		private System.Windows.Forms.Label label5;
-	}
+        private TabPage tabPage3;
+    }
 }
 
