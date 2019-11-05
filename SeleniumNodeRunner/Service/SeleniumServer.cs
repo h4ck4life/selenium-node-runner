@@ -37,9 +37,7 @@ namespace SeleniumNodeRunner.Service
             process.StartInfo.RedirectStandardOutput = true;
             process.StartInfo.RedirectStandardError = true;
 
-            process.StartInfo.Arguments = "\"-Dwebdriver.chrome.driver=" + this.chromeDrivePath.Text + "\" -jar " + this.seleniumServerPath.Text + " -role " + (runAsHub.Checked ? "hub" : "webdriver") + " -hub http://" + this.seleniumHubAddress.Text + " -host " + this.localIPAddress.SelectedItem;
-
-            process.StartInfo.Arguments = "\"-Dwebdriver.chrome.driver=" + this.chromeDrivePath.Text + "\" -jar " + this.seleniumServerPath.Text + " -role " + (runAsHub.Checked ? "hub" : "webdriver -hub " + this.seleniumHubAddress.Text) + " -host " + this.localIPAddress.SelectedItem;
+            process.StartInfo.Arguments = "\"-Dwebdriver.chrome.driver=" + this.chromeDrivePath.Text + "\" -jar " + this.seleniumServerPath.Text + " -role " + (runAsHub.Checked ? "hub" : "webdriver -browser browserName=chrome,maxInstances=10 -maxSession 10 -hub " + this.seleniumHubAddress.Text) + " -host " + this.localIPAddress.SelectedItem;
 
             process.StartInfo.CreateNoWindow = true;
             //process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
