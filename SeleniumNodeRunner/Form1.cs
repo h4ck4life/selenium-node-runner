@@ -10,258 +10,265 @@ using System.Windows.Forms;
 
 namespace SeleniumNodeRunner
 {
-    public partial class Form1 : Form
-    {
+	public partial class Form1 : Form
+	{
 
-        SeleniumServer seleniumServer;
-        private uint fPreviousExecutionState;
-        bool InputFormToggle = true;
-        ContextMenu CtxMenuNotifyIcon;
+		SeleniumServer seleniumServer;
+		private uint fPreviousExecutionState;
+		bool InputFormToggle = true;
+		ContextMenu CtxMenuNotifyIcon;
 
-        public Form1()
-        {
-            InitializeComponent();
+		public Form1()
+		{
+			InitializeComponent();
+		}
 
-            // Set new state to prevent system sleep
-            fPreviousExecutionState = NativeMethods.SetThreadExecutionState(
-                NativeMethods.ES_CONTINUOUS | NativeMethods.ES_SYSTEM_REQUIRED);
-            if (fPreviousExecutionState == 0)
-            {
-                Console.WriteLine("SetThreadExecutionState failed. Do something here...");
-                Close();
-            }
-        }
+		private void Form1_Load(object sender, EventArgs e)
+		{
+			NativeMethods.PreventSleep();
+			LoadSettings();
+			LoadLocalIPAddress();
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
+			CtxMenuNotifyIcon = new ContextMenu();
+			CtxMenuNotifyIcon.MenuItems.Add("Open", (s, ev) =>
+			{
+				this.Show();
+				WindowState = FormWindowState.Normal;
+			});
+			CtxMenuNotifyIcon.MenuItems.Add("Exit", (s, ev) => Application.Exit());
 
-            LoadSettings();
-            LoadLocalIPAddress();
+			seleniumServer = new SeleniumServer(
+				txtBox_ChromeDriver,
+				txtBox_seleniumjar,
+				txtBox_hubaddress,
+				comboBox1,
+				checkBox1
+			);
+		}
 
-            CtxMenuNotifyIcon = new ContextMenu();
-            CtxMenuNotifyIcon.MenuItems.Add("Open", (s, ev) =>
-            {
-                this.Show();
-                WindowState = FormWindowState.Normal;
-            });
-            CtxMenuNotifyIcon.MenuItems.Add("Exit", (s, ev) => Application.Exit());
+		protected override void OnFormClosing(FormClosingEventArgs e)
+		{
+			seleniumServer.Stop(button1.Text);
+		}
 
-            seleniumServer = new SeleniumServer(
-                txtBox_ChromeDriver,
-                txtBox_seleniumjar,
-                txtBox_hubaddress,
-                comboBox1,
-                checkBox1
-            );
-        }
+		private void LoadSettings()
+		{
+			txtBox_ChromeDriver.Text = Properties.Settings.Default.ChromeDriver;
+			txtBox_seleniumjar.Text = Properties.Settings.Default.SeleniumJar;
+			txtBox_hubaddress.Text = Properties.Settings.Default.HubAddress;
 
-        protected override void OnFormClosing(FormClosingEventArgs e)
-        {
-            seleniumServer.Stop(button1.Text);
-        }
+			checkBox1.Checked = Properties.Settings.Default.RunAsHub;
+			checkBox2.Checked = Properties.Settings.Default.AutoRun;
+		}
 
-        private void LoadSettings()
-        {
-            txtBox_ChromeDriver.Text = Properties.Settings.Default.ChromeDriver;
-            txtBox_seleniumjar.Text = Properties.Settings.Default.SeleniumJar;
-            txtBox_hubaddress.Text = Properties.Settings.Default.HubAddress;
+		private bool SaveSettings()
+		{
 
-            checkBox1.Checked = Properties.Settings.Default.RunAsHub;
-            checkBox2.Checked = Properties.Settings.Default.AutoRun;
-        }
+			if (txtBox_ChromeDriver.Text == "" || txtBox_seleniumjar.Text == "" || txtBox_hubaddress.Text == "")
+			{
+				MessageBox.Show("Please set all the configurations",
+					"Info",
+					MessageBoxButtons.OK,
+					MessageBoxIcon.Information);
+				txtBox_ChromeDriver.Focus();
+				return false;
+			}
 
-        private bool SaveSettings()
-        {
+			Properties.Settings.Default.ChromeDriver = txtBox_ChromeDriver.Text;
+			Properties.Settings.Default.SeleniumJar = txtBox_seleniumjar.Text;
+			Properties.Settings.Default.HubAddress = txtBox_hubaddress.Text;
 
-            if (txtBox_ChromeDriver.Text == "" || txtBox_seleniumjar.Text == "" || txtBox_hubaddress.Text == "")
-            {
-                MessageBox.Show("Please set all the configurations",
-                    "Info",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
-                txtBox_ChromeDriver.Focus();
-                return false;
-            }
+			Properties.Settings.Default.RunAsHub = checkBox1.Checked;
+			Properties.Settings.Default.AutoRun = checkBox2.Checked;
 
-            Properties.Settings.Default.ChromeDriver = txtBox_ChromeDriver.Text;
-            Properties.Settings.Default.SeleniumJar = txtBox_seleniumjar.Text;
-            Properties.Settings.Default.HubAddress = txtBox_hubaddress.Text;
+			Properties.Settings.Default.Save();
 
-            Properties.Settings.Default.RunAsHub = checkBox1.Checked;
-            Properties.Settings.Default.AutoRun = checkBox2.Checked;
+			return true;
+		}
 
-            Properties.Settings.Default.Save();
+		private void LoadLocalIPAddress()
+		{
+			List<string> items = new List<string>();
 
-            return true;
-        }
+			IPAddress[] localIPs = Dns.GetHostAddresses(Dns.GetHostName());
+			foreach (IPAddress addr in localIPs)
+			{
+				if (addr.AddressFamily == AddressFamily.InterNetwork)
+				{
+					items.Add(addr.ToString());
+				}
+			}
 
-        private void LoadLocalIPAddress()
-        {
-            List<string> items = new List<string>();
+			comboBox1.DataSource = items;
+		}
 
-            IPAddress[] localIPs = Dns.GetHostAddresses(Dns.GetHostName());
-            foreach (IPAddress addr in localIPs)
-            {
-                if (addr.AddressFamily == AddressFamily.InterNetwork)
-                {
-                    items.Add(addr.ToString());
-                }
-            }
+		private void InputFormsToggle()
+		{
+			if (InputFormToggle == true)
+			{
+				txtBox_ChromeDriver.Enabled = false;
+				txtBox_hubaddress.Enabled = false;
+				txtBox_seleniumjar.Enabled = false;
 
-            comboBox1.DataSource = items;
-        }
+				comboBox1.Enabled = false;
 
-        private void InputFormsToggle()
-        {
-            if (InputFormToggle == true)
-            {
-                txtBox_ChromeDriver.Enabled = false;
-                txtBox_hubaddress.Enabled = false;
-                txtBox_seleniumjar.Enabled = false;
+				checkBox1.Enabled = false;
+				//checkBox2.Enabled = false;
 
-                comboBox1.Enabled = false;
+				InputFormToggle = false;
 
-                checkBox1.Enabled = false;
-                //checkBox2.Enabled = false;
+			}
+			else
+			{
+				txtBox_ChromeDriver.Enabled = true;
+				txtBox_hubaddress.Enabled = true;
+				txtBox_seleniumjar.Enabled = true;
 
-                InputFormToggle = false;
+				comboBox1.Enabled = true;
 
-            }
-            else
-            {
-                txtBox_ChromeDriver.Enabled = true;
-                txtBox_hubaddress.Enabled = true;
-                txtBox_seleniumjar.Enabled = true;
+				checkBox1.Enabled = true;
+				//checkBox2.Enabled = true;
 
-                comboBox1.Enabled = true;
+				InputFormToggle = true;
+			}
 
-                checkBox1.Enabled = true;
-                //checkBox2.Enabled = true;
+		}
 
-                InputFormToggle = true;
-            }
+		private void Form1_Resize(object sender, EventArgs e)
+		{
+			if (FormWindowState.Minimized == this.WindowState)
+			{
+				notifyIcon1.Visible = true;
+				notifyIcon1.ContextMenu = CtxMenuNotifyIcon;
+				notifyIcon1.ShowBalloonTip(500, "Selenium Node Runner", "Selenium Node Runner in background", ToolTipIcon.Info);
+				this.Hide();
+			}
 
-        }
+			else if (FormWindowState.Normal == this.WindowState)
+			{
+				notifyIcon1.Visible = false;
+			}
+		}
 
-        private void Form1_Resize(object sender, EventArgs e)
-        {
-            if (FormWindowState.Minimized == this.WindowState)
-            {
-                notifyIcon1.Visible = true;
-                notifyIcon1.ContextMenu = CtxMenuNotifyIcon;
-                notifyIcon1.ShowBalloonTip(500, "Selenium Node Runner", "Selenium Node Runner in background", ToolTipIcon.Info);
-                this.Hide();
-            }
+		private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
+		{
+			this.Show();
+			WindowState = FormWindowState.Normal;
+		}
 
-            else if (FormWindowState.Normal == this.WindowState)
-            {
-                notifyIcon1.Visible = false;
-            }
-        }
+		private void button1_Click(object sender, EventArgs e)
+		{
+			Button btnStartStop = (Button)sender;
 
-        private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            this.Show();
-            WindowState = FormWindowState.Normal;
-        }
+			if (btnStartStop.Text == "Start")
+			{
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            Button btnStartStop = (Button)sender;
+				if (SaveSettings())
+				{
+					tabControl1.SelectTab(1);
 
-            if (btnStartStop.Text == "Start")
-            {
+					seleniumServer.Run((output) =>
+					{
+						if (output != null)
+						{
+							textBox1.Invoke((Action)delegate
+							{
+								textBox1.AppendText(output);
+								textBox1.AppendText(Environment.NewLine);
+							}
+						);
+						}
+					});
 
-                if (SaveSettings())
-                {
-                    tabControl1.SelectTab(1);
+					btnStartStop.Text = "Stop";
+					toolStripStatusLabel1.Text = "✅ Online";
+					toolStripStatusLabel1.ForeColor = Color.Green;
 
-                    seleniumServer.Run((output) =>
-                    {
-                        if (output != null)
-                        {
-                            textBox1.Invoke((Action)delegate
-                            {
-                                textBox1.AppendText(output);
-                                textBox1.AppendText(Environment.NewLine);
-                            }
-                        );
-                        }
-                    });
+					InputFormsToggle();
+					toggle_enabled_hubAddress();
 
-                    btnStartStop.Text = "Stop";
-                    toolStripStatusLabel1.Text = "✅ Online";
-                    toolStripStatusLabel1.ForeColor = Color.Green;
+				}
+			}
+			else if (btnStartStop.Text == "Stop")
+			{
+				seleniumServer.Stop();
+				btnStartStop.Text = "Start";
+				toolStripStatusLabel1.Text = "🔴 Offline";
+				toolStripStatusLabel1.ForeColor = Color.Red;
 
-                    InputFormsToggle();
-                    toggle_enabled_hubAddress();
+				textBox1.AppendText(Environment.NewLine);
+				textBox1.AppendText("==================STOPPED===================");
+				textBox1.AppendText(Environment.NewLine);
+				textBox1.AppendText(Environment.NewLine);
 
-                }
-            }
-            else if (btnStartStop.Text == "Stop")
-            {
-                seleniumServer.Stop();
-                btnStartStop.Text = "Start";
-                toolStripStatusLabel1.Text = "🔴 Offline";
-                toolStripStatusLabel1.ForeColor = Color.Red;
+				InputFormsToggle();
+				toggle_enabled_hubAddress();
 
-                textBox1.AppendText(Environment.NewLine);
-                textBox1.AppendText("==================STOPPED===================");
-                textBox1.AppendText(Environment.NewLine);
-                textBox1.AppendText(Environment.NewLine);
+			}
+			else { }
+		}
 
-                InputFormsToggle();
-                toggle_enabled_hubAddress();
+		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			System.Diagnostics.Process.Start("https://chromedriver.chromium.org/downloads");
+		}
 
-            }
-            else { }
-        }
+		private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			System.Diagnostics.Process.Start("http://selenium-release.storage.googleapis.com/index.html");
+		}
 
-        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            System.Diagnostics.Process.Start("https://chromedriver.chromium.org/downloads");
-        }
+		private void checkBox1_CheckedChanged(object sender, EventArgs e)
+		{
+			CheckBox checkbox1_sender = (CheckBox)sender;
 
-        private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            System.Diagnostics.Process.Start("http://selenium-release.storage.googleapis.com/index.html");
-        }
+			if (checkbox1_sender.Checked)
+			{
+				txtBox_hubaddress.Enabled = false;
+			}
+			else
+			{
+				txtBox_hubaddress.Enabled = true;
+			}
+		}
 
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
-        {
-            CheckBox checkbox1_sender = (CheckBox)sender;
+		private void toggle_enabled_hubAddress()
+		{
+			if (checkBox1.Checked)
+			{
+				txtBox_hubaddress.Enabled = false;
+				this.Text = "Server - Selenium Node Runner";
+			}
+			else
+			{
+				txtBox_hubaddress.Enabled = true;
+				this.Text = "Client - Selenium Node Runner";
+			}
+		}
+	}
 
-            if (checkbox1_sender.Checked)
-            {
-                txtBox_hubaddress.Enabled = false;
-            }
-            else
-            {
-                txtBox_hubaddress.Enabled = true;
-            }
-        }
+	internal static class NativeMethods
+	{
+		public static void PreventSleep()
+		{
+			SetThreadExecutionState(ExecutionState.EsContinuous | ExecutionState.EsSystemRequired);
+		}
 
-        private void toggle_enabled_hubAddress()
-        {
-            if (checkBox1.Checked)
-            {
-                txtBox_hubaddress.Enabled = false;
-                this.Text = "Server - Selenium Node Runner";
-            }
-            else
-            {
-                txtBox_hubaddress.Enabled = true;
-                this.Text = "Client - Selenium Node Runner";
-            }
-        }
-    }
+		public static void AllowSleep()
+		{
+			SetThreadExecutionState(ExecutionState.EsContinuous);
+		}
 
-    internal static class NativeMethods
-    {
-        // Import SetThreadExecutionState Win32 API and necessary flags
-        [DllImport("kernel32.dll")]
-        public static extern uint SetThreadExecutionState(uint esFlags);
-        public const uint ES_CONTINUOUS = 0x80000000;
-        public const uint ES_SYSTEM_REQUIRED = 0x00000001;
-    }
+		[DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		private static extern ExecutionState SetThreadExecutionState(ExecutionState esFlags);
+
+		[FlagsAttribute]
+		private enum ExecutionState : uint
+		{
+			EsAwaymodeRequired = 0x00000040,
+			EsContinuous = 0x80000000,
+			EsDisplayRequired = 0x00000002,
+			EsSystemRequired = 0x00000001
+		}
+	}
 }
