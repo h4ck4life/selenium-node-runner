@@ -214,8 +214,6 @@ namespace SeleniumNodeRunner
 				textBox1.AppendText(Environment.NewLine);
 
 				InputFormsToggle();
-				toggle_enabled_hubAddress();
-
 			}
 			else { }
 		}
@@ -242,7 +240,9 @@ namespace SeleniumNodeRunner
 			{
 				txtBox_hubaddress.Enabled = true;
 			}
-		}
+
+            toggle_enabled_hubAddress();
+        }
 
 		private void RegisterInStartup(bool isChecked)
 		{
