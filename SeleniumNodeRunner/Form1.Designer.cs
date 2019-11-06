@@ -63,6 +63,7 @@ namespace SeleniumNodeRunner
             this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.statusStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -74,6 +75,7 @@ namespace SeleniumNodeRunner
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.tabPage2.SuspendLayout();
+            this.groupBox5.SuspendLayout();
             this.SuspendLayout();
             // 
             // notifyIcon1
@@ -323,11 +325,8 @@ namespace SeleniumNodeRunner
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.groupBox5);
             this.groupBox4.Controls.Add(this.linkLabel3);
-            this.groupBox4.Controls.Add(this.numericUpDown2);
-            this.groupBox4.Controls.Add(this.numericUpDown1);
-            this.groupBox4.Controls.Add(this.label7);
-            this.groupBox4.Controls.Add(this.label6);
             this.groupBox4.Location = new System.Drawing.Point(9, 7);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(667, 231);
@@ -337,7 +336,7 @@ namespace SeleniumNodeRunner
             // linkLabel3
             // 
             this.linkLabel3.AutoSize = true;
-            this.linkLabel3.Location = new System.Drawing.Point(19, 133);
+            this.linkLabel3.Location = new System.Drawing.Point(27, 154);
             this.linkLabel3.Name = "linkLabel3";
             this.linkLabel3.Size = new System.Drawing.Size(29, 13);
             this.linkLabel3.TabIndex = 4;
@@ -347,7 +346,7 @@ namespace SeleniumNodeRunner
             // 
             // numericUpDown2
             // 
-            this.numericUpDown2.Location = new System.Drawing.Point(22, 93);
+            this.numericUpDown2.Location = new System.Drawing.Point(25, 94);
             this.numericUpDown2.Minimum = new decimal(new int[] {
             10,
             0,
@@ -364,7 +363,7 @@ namespace SeleniumNodeRunner
             // 
             // numericUpDown1
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(22, 39);
+            this.numericUpDown1.Location = new System.Drawing.Point(25, 40);
             this.numericUpDown1.Minimum = new decimal(new int[] {
             10,
             0,
@@ -382,7 +381,7 @@ namespace SeleniumNodeRunner
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(19, 77);
+            this.label7.Location = new System.Drawing.Point(22, 78);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(76, 13);
             this.label7.TabIndex = 1;
@@ -391,7 +390,7 @@ namespace SeleniumNodeRunner
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(19, 23);
+            this.label6.Location = new System.Drawing.Point(22, 24);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(67, 13);
             this.label6.TabIndex = 0;
@@ -407,6 +406,19 @@ namespace SeleniumNodeRunner
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Output";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // groupBox5
+            // 
+            this.groupBox5.Controls.Add(this.numericUpDown1);
+            this.groupBox5.Controls.Add(this.label6);
+            this.groupBox5.Controls.Add(this.numericUpDown2);
+            this.groupBox5.Controls.Add(this.label7);
+            this.groupBox5.Location = new System.Drawing.Point(21, 19);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(174, 132);
+            this.groupBox5.TabIndex = 5;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "Optional";
             // 
             // Form1
             // 
@@ -439,6 +451,8 @@ namespace SeleniumNodeRunner
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             this.tabPage2.ResumeLayout(false);
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -477,6 +491,7 @@ namespace SeleniumNodeRunner
 		private NumericUpDown numericUpDown2;
 		private NumericUpDown numericUpDown1;
 		private LinkLabel linkLabel3;
-	}
+        private GroupBox groupBox5;
+    }
 }
 
