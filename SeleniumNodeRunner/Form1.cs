@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using System.Timers;
 
 namespace SeleniumNodeRunner
 {
@@ -96,7 +97,7 @@ namespace SeleniumNodeRunner
 
         private bool SaveSettings()
         {
-            if (txtBox_ChromeDriver.Text == "" || txtBox_seleniumjar.Text == "" || txtBox_hubaddress.Text == "")
+            if (txtBox_ChromeDriver.Text == "" || txtBox_seleniumjar.Text == "" || (checkBox1.Checked == false && txtBox_hubaddress.Text == ""))
             {
                 MessageBox.Show("Please set all the configurations",
                     "Info",
@@ -196,6 +197,18 @@ namespace SeleniumNodeRunner
             WindowState = FormWindowState.Normal;
         }
 
+        private void ShowOnlineStatus()
+        {
+            toolStripStatusLabel1.Text = "✅ Online";
+            toolStripStatusLabel1.ForeColor = Color.Green;
+        }
+
+        private void ShowOfflineStatus()
+        {
+            toolStripStatusLabel1.Text = "🔴 Offline";
+            toolStripStatusLabel1.ForeColor = Color.Red;
+        }
+
         private void RunTheSelenium(Button btnStartStop)
         {
             tabControl1.SelectTab(2);
@@ -206,6 +219,15 @@ namespace SeleniumNodeRunner
                 {
                     textBox1.Invoke((Action)delegate
                     {
+                        if(output.Contains("Selenium Grid hub is up and running") || output.Contains("registered"))
+                        {
+                            ShowOnlineStatus();
+                        }
+                        if(output.Contains("Couldn't register this node"))
+                        {
+                            ShowOfflineStatus();
+                            notifyIcon1.ShowBalloonTip(500, "Selenium Hub is down", output, ToolTipIcon.Warning);
+                        }
                         textBox1.AppendText(output);
                         textBox1.AppendText(Environment.NewLine);
                     }
@@ -214,8 +236,6 @@ namespace SeleniumNodeRunner
             });
 
             btnStartStop.Text = "Stop";
-            toolStripStatusLabel1.Text = "✅ Online";
-            toolStripStatusLabel1.ForeColor = Color.Green;
 
             InputFormsToggle();
         }
@@ -234,9 +254,9 @@ namespace SeleniumNodeRunner
             else if (btnStartStop.Text == "Stop")
             {
                 seleniumServer.Stop();
+
                 btnStartStop.Text = "Start";
-                toolStripStatusLabel1.Text = "🔴 Offline";
-                toolStripStatusLabel1.ForeColor = Color.Red;
+                ShowOfflineStatus();
 
                 textBox1.AppendText(Environment.NewLine);
                 textBox1.AppendText("==================STOPPED===================");
@@ -311,6 +331,11 @@ namespace SeleniumNodeRunner
         {
             CheckBox autoStart = (CheckBox)sender;
             RegisterInStartup(autoStart.Checked);
+        }
+
+        private void label8_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/h4ck4life/selenium-node-runner/releases");
         }
     }
 
