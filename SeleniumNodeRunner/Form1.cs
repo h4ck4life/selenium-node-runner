@@ -44,6 +44,11 @@ namespace SeleniumNodeRunner
 				numericUpDown1,
 				numericUpDown2
 			);
+
+			if (checkBox2.Checked)
+			{
+				RunTheSelenium(button1);
+			}
 		}
 
 		protected override void OnFormClosing(FormClosingEventArgs e)
@@ -161,6 +166,30 @@ namespace SeleniumNodeRunner
 			WindowState = FormWindowState.Normal;
 		}
 
+		private void RunTheSelenium(Button btnStartStop)
+		{
+			tabControl1.SelectTab(2);
+
+			seleniumServer.Run((output) =>
+			{
+				if (output != null)
+				{
+					textBox1.Invoke((Action)delegate
+					{
+						textBox1.AppendText(output);
+						textBox1.AppendText(Environment.NewLine);
+					}
+				);
+				}
+			});
+
+			btnStartStop.Text = "Stop";
+			toolStripStatusLabel1.Text = "✅ Online";
+			toolStripStatusLabel1.ForeColor = Color.Green;
+
+			InputFormsToggle();
+		}
+
 		private void button1_Click(object sender, EventArgs e)
 		{
 			Button btnStartStop = (Button)sender;
@@ -169,27 +198,7 @@ namespace SeleniumNodeRunner
 			{
 				if (SaveSettings())
 				{
-					tabControl1.SelectTab(2);
-
-					seleniumServer.Run((output) =>
-					{
-						if (output != null)
-						{
-							textBox1.Invoke((Action)delegate
-							{
-								textBox1.AppendText(output);
-								textBox1.AppendText(Environment.NewLine);
-							}
-						);
-						}
-					});
-
-					btnStartStop.Text = "Stop";
-					toolStripStatusLabel1.Text = "✅ Online";
-					toolStripStatusLabel1.ForeColor = Color.Green;
-
-					InputFormsToggle();
-					//toggle_enabled_hubAddress();
+					RunTheSelenium(btnStartStop);
 				}
 			}
 			else if (btnStartStop.Text == "Stop")
