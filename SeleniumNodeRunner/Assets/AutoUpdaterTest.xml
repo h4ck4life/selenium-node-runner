@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<item>
+    <version>2.0.0.0</version>
+    <url>https://github.com/h4ck4life/selenium-node-runner/releases/download/1.0.2/SeleniumNodeRunner.exe</url>
+    <changelog>https://github.com/h4ck4life/selenium-node-runner/releases</changelog>
+    <mandatory>false</mandatory>
+</item>

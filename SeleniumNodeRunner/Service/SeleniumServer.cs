@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace SeleniumNodeRunner.Service
 {
-    class SeleniumServer
+    class SeleniumServer : IDisposable
     {
         private Process process;
         private BackgroundWorker worker;
@@ -116,6 +116,11 @@ namespace SeleniumNodeRunner.Service
                 //MessageBox.Show("Something wrong happened. " + e.Message);
             }
 
+        }
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
         }
     }
 }

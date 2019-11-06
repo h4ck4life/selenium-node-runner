@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using AutoUpdaterDotNET;
 
 namespace SeleniumNodeRunner
 {
@@ -19,6 +20,11 @@ namespace SeleniumNodeRunner
         public Form1()
         {
             InitializeComponent();
+        }
+
+        private void checkForUpdate()
+        {
+            AutoUpdater.Start("http://rbsoft.org/updates/AutoUpdaterTest.xml");
         }
 
         private void Form1_Load(object sender, EventArgs e)
