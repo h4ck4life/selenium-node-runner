@@ -54,6 +54,7 @@ namespace SeleniumNodeRunner
 
             if (checkBox2.Checked)
             {
+                WindowState = FormWindowState.Minimized;
                 RunTheSelenium(button1);
             }
 
@@ -332,6 +333,9 @@ namespace SeleniumNodeRunner
         {
             CheckBox autoStart = (CheckBox)sender;
             RegisterInStartup(autoStart.Checked);
+
+            Properties.Settings.Default.AutoRun = checkBox2.Checked;
+            Properties.Settings.Default.Save();
         }
 
         private void label8_Click(object sender, EventArgs e)
