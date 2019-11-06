@@ -33,6 +33,7 @@ namespace SeleniumNodeRunner
             LoadSettings();
             LoadLocalIPAddress();
             DisplayAppVersion();
+            toggle_enabled_hubAddress();
 
             CtxMenuNotifyIcon = new ContextMenu();
             CtxMenuNotifyIcon.MenuItems.Add("Open", (s, ev) =>
@@ -213,6 +214,8 @@ namespace SeleniumNodeRunner
 
         private void RunTheSelenium(Button btnStartStop)
         {
+            int notificationCounter = 0;
+
             tabControl1.SelectTab(2);
 
             seleniumServer.Run((output) =>
@@ -221,14 +224,23 @@ namespace SeleniumNodeRunner
                 {
                     textBox1.Invoke((Action)delegate
                     {
-                        if(output.Contains("Selenium Grid hub is up and running") || output.Contains("registered"))
+                        if (output.Contains("Selenium Grid hub is up and running") || output.Contains("registered"))
                         {
                             ShowOnlineStatus();
                         }
-                        if(output.Contains("Couldn't register this node"))
+                        if (output.Contains("Couldn't register this node"))
                         {
                             ShowOfflineStatus();
-                            notifyIcon1.ShowBalloonTip(500, "Selenium Hub is down", output, ToolTipIcon.Warning);
+                            if (notificationCounter == 0)
+                            {
+                                notifyIcon1.ShowBalloonTip(500, "Selenium Hub is down", output, ToolTipIcon.Warning);
+                                notificationCounter = 30;
+                            }
+                            else
+                            {
+                                notificationCounter--;
+                            }
+
                         }
                         textBox1.AppendText(output);
                         textBox1.AppendText(Environment.NewLine);
