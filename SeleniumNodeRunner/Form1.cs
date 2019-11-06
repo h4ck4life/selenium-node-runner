@@ -7,7 +7,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using AutoUpdaterDotNET;
 
 namespace SeleniumNodeRunner
 {
@@ -24,9 +23,7 @@ namespace SeleniumNodeRunner
 
         private void checkForUpdate()
         {
-            AutoUpdater.DownloadPath = Environment.CurrentDirectory;
-            AutoUpdater.ShowSkipButton = false;
-            AutoUpdater.Start("https://raw.githubusercontent.com/h4ck4life/selenium-node-runner/master/SeleniumNodeRunner/Assets/AutoUpdaterTest.xml");
+
         }
 
         private void Form1_Load(object sender, EventArgs e)
