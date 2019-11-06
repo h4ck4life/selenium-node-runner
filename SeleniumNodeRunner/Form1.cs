@@ -24,7 +24,9 @@ namespace SeleniumNodeRunner
 
         private void checkForUpdate()
         {
-            AutoUpdater.Start("http://rbsoft.org/updates/AutoUpdaterTest.xml");
+            AutoUpdater.DownloadPath = Environment.CurrentDirectory;
+            AutoUpdater.ShowSkipButton = false;
+            AutoUpdater.Start("https://raw.githubusercontent.com/h4ck4life/selenium-node-runner/master/SeleniumNodeRunner/Assets/AutoUpdaterTest.xml");
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -32,6 +34,7 @@ namespace SeleniumNodeRunner
             NativeMethods.PreventSleep();
             LoadSettings();
             LoadLocalIPAddress();
+            DisplayAppVersion();
 
             CtxMenuNotifyIcon = new ContextMenu();
             CtxMenuNotifyIcon.MenuItems.Add("Open", (s, ev) =>
@@ -55,11 +58,17 @@ namespace SeleniumNodeRunner
             {
                 RunTheSelenium(button1);
             }
+
+            try
+            {
+                checkForUpdate();
+            }
+            catch (Exception) { }
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
-            DialogResult result1 = MessageBox.Show("This will stop running testing. Are you sure want to exit?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            DialogResult result1 = MessageBox.Show("This will stop running tests. Are you sure want to exit?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
             if (result1 == DialogResult.Yes)
             {
                 seleniumServer.Stop(button1.Text);
@@ -81,6 +90,11 @@ namespace SeleniumNodeRunner
 
             numericUpDown1.Value = decimal.Parse(Properties.Settings.Default.MaxSession);
             numericUpDown2.Value = decimal.Parse(Properties.Settings.Default.MaxInstances);
+        }
+
+        private void DisplayAppVersion()
+        {
+            label8.Text = "Version " + Application.ProductVersion;
         }
 
         private bool SaveSettings()

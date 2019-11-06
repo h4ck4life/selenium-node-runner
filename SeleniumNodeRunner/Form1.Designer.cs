@@ -64,6 +64,7 @@ namespace SeleniumNodeRunner
             this.label6 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.label8 = new System.Windows.Forms.Label();
             this.statusStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -420,11 +421,22 @@ namespace SeleniumNodeRunner
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Optional";
             // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.ForeColor = System.Drawing.SystemColors.AppWorkspace;
+            this.label8.Location = new System.Drawing.Point(528, 279);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(78, 13);
+            this.label8.TabIndex = 12;
+            this.label8.Text = "Version 9.9.9.9";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(692, 297);
+            this.Controls.Add(this.label8);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.statusStrip1);
@@ -492,6 +504,7 @@ namespace SeleniumNodeRunner
 		private NumericUpDown numericUpDown1;
 		private LinkLabel linkLabel3;
         private GroupBox groupBox5;
+        private Label label8;
     }
 }
 
