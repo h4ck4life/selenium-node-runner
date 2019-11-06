@@ -14,20 +14,26 @@ namespace SeleniumNodeRunner.Service
         private TextBox seleniumHubAddress;
         private ComboBox localIPAddress;
         private CheckBox runAsHub;
+		private NumericUpDown maxSession;
+		private NumericUpDown maxInstances;
 
-        public SeleniumServer(
+		public SeleniumServer(
             TextBox chromeDrivePath,
             TextBox seleniumServerPath,
             TextBox seleniumHubAddress,
             ComboBox localIPAddress,
-            CheckBox runAsHub
-        )
+            CheckBox runAsHub,
+			NumericUpDown maxSession,
+			NumericUpDown maxInstances
+		)
         {
             this.chromeDrivePath = chromeDrivePath;
             this.seleniumServerPath = seleniumServerPath;
             this.seleniumHubAddress = seleniumHubAddress;
             this.localIPAddress = localIPAddress;
             this.runAsHub = runAsHub;
+			this.maxSession = maxSession;
+			this.maxInstances = maxInstances;
         }
 
         public void Run(Action<String> callback)
@@ -37,7 +43,7 @@ namespace SeleniumNodeRunner.Service
             process.StartInfo.RedirectStandardOutput = true;
             process.StartInfo.RedirectStandardError = true;
 
-            process.StartInfo.Arguments = "\"-Dwebdriver.chrome.driver=" + this.chromeDrivePath.Text + "\" -jar " + this.seleniumServerPath.Text + " -role " + (runAsHub.Checked ? "hub" : "webdriver -browser browserName=chrome,maxInstances=10 -maxSession 10 -hub " + this.seleniumHubAddress.Text) + " -host " + this.localIPAddress.SelectedItem;
+            process.StartInfo.Arguments = "\"-Dwebdriver.chrome.driver=" + this.chromeDrivePath.Text + "\" -jar " + this.seleniumServerPath.Text + " -role " + (runAsHub.Checked ? "hub" : "webdriver -browser browserName=chrome,maxInstances="+ maxInstances.Value.ToString() + " -maxSession "+ maxSession.Value.ToString() + " -hub " + this.seleniumHubAddress.Text) + " -host " + this.localIPAddress.SelectedItem;
 
             process.StartInfo.CreateNoWindow = true;
             //process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;

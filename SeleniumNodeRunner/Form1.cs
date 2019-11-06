@@ -1,4 +1,5 @@
-﻿using SeleniumNodeRunner.Service;
+﻿using Microsoft.Win32;
+using SeleniumNodeRunner.Service;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -9,7 +10,7 @@ using System.Windows.Forms;
 
 namespace SeleniumNodeRunner
 {
-    public partial class Form1 : Form
+	public partial class Form1 : Form
 	{
 		SeleniumServer seleniumServer;
 		bool InputFormToggle = true;
@@ -39,7 +40,9 @@ namespace SeleniumNodeRunner
 				txtBox_seleniumjar,
 				txtBox_hubaddress,
 				comboBox1,
-				checkBox1
+				checkBox1,
+				numericUpDown1,
+				numericUpDown2
 			);
 		}
 
@@ -56,6 +59,9 @@ namespace SeleniumNodeRunner
 
 			checkBox1.Checked = Properties.Settings.Default.RunAsHub;
 			checkBox2.Checked = Properties.Settings.Default.AutoRun;
+
+			numericUpDown1.Value = decimal.Parse(Properties.Settings.Default.MaxSession);
+			numericUpDown2.Value = decimal.Parse(Properties.Settings.Default.MaxInstances);
 		}
 
 		private bool SaveSettings()
@@ -76,6 +82,9 @@ namespace SeleniumNodeRunner
 
 			Properties.Settings.Default.RunAsHub = checkBox1.Checked;
 			Properties.Settings.Default.AutoRun = checkBox2.Checked;
+
+			Properties.Settings.Default.MaxInstances = numericUpDown1.Value.ToString();
+			Properties.Settings.Default.MaxSession = numericUpDown2.Value.ToString();
 
 			Properties.Settings.Default.Save();
 
@@ -160,7 +169,7 @@ namespace SeleniumNodeRunner
 			{
 				if (SaveSettings())
 				{
-					tabControl1.SelectTab(1);
+					tabControl1.SelectTab(2);
 
 					seleniumServer.Run((output) =>
 					{
@@ -180,7 +189,7 @@ namespace SeleniumNodeRunner
 					toolStripStatusLabel1.ForeColor = Color.Green;
 
 					InputFormsToggle();
-					toggle_enabled_hubAddress();
+					//toggle_enabled_hubAddress();
 				}
 			}
 			else if (btnStartStop.Text == "Stop")
@@ -226,6 +235,20 @@ namespace SeleniumNodeRunner
 			}
 		}
 
+		private void RegisterInStartup(bool isChecked)
+		{
+			RegistryKey registryKey = Registry.CurrentUser.OpenSubKey
+					("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+			if (isChecked)
+			{
+				registryKey.SetValue("ApplicationName", Application.ExecutablePath);
+			}
+			else
+			{
+				registryKey.DeleteValue("ApplicationName");
+			}
+		}
+
 		private void toggle_enabled_hubAddress()
 		{
 			if (checkBox1.Checked)
@@ -238,6 +261,17 @@ namespace SeleniumNodeRunner
 				txtBox_hubaddress.Enabled = true;
 				this.Text = "Client - Selenium Node Runner";
 			}
+		}
+
+		private void linkLabel3_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			System.Diagnostics.Process.Start("https://github.com/SeleniumHQ/selenium/wiki/Grid2#optional-parameters");
+		}
+
+		private void checkBox2_CheckedChanged(object sender, EventArgs e)
+		{
+			CheckBox autoStart = (CheckBox)sender;
+			RegisterInStartup(autoStart.Checked);
 		}
 	}
 
