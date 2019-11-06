@@ -66,9 +66,10 @@ namespace SeleniumNodeRunner
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
-            DialogResult result1 = MessageBox.Show("This will stop running tests. Are you sure want to exit?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            DialogResult result1 = MessageBox.Show("Make sure no tests are running before exit. Do you want to proceed?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
             if (result1 == DialogResult.Yes)
             {
+                notifyIcon1.Dispose();
                 seleniumServer.Stop(button1.Text);
             }
             else
