@@ -14,36 +14,36 @@ namespace SeleniumNodeRunner.Service
         private TextBox seleniumHubAddress;
         private ComboBox localIPAddress;
         private CheckBox runAsHub;
-		private NumericUpDown maxSession;
-		private NumericUpDown maxInstances;
+        private NumericUpDown maxSession;
+        private NumericUpDown maxInstances;
 
-		public SeleniumServer(
+        public SeleniumServer(
             TextBox chromeDrivePath,
             TextBox seleniumServerPath,
             TextBox seleniumHubAddress,
             ComboBox localIPAddress,
             CheckBox runAsHub,
-			NumericUpDown maxSession,
-			NumericUpDown maxInstances
-		)
+            NumericUpDown maxSession,
+            NumericUpDown maxInstances
+        )
         {
             this.chromeDrivePath = chromeDrivePath;
             this.seleniumServerPath = seleniumServerPath;
             this.seleniumHubAddress = seleniumHubAddress;
             this.localIPAddress = localIPAddress;
             this.runAsHub = runAsHub;
-			this.maxSession = maxSession;
-			this.maxInstances = maxInstances;
+            this.maxSession = maxSession;
+            this.maxInstances = maxInstances;
         }
 
-        public void Run(Action<String> callback)
+        public void Run(Action<string> callback)
         {
             process = new Process();
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.RedirectStandardOutput = true;
             process.StartInfo.RedirectStandardError = true;
 
-            process.StartInfo.Arguments = "\"-Dwebdriver.chrome.driver=" + this.chromeDrivePath.Text + "\" -jar " + this.seleniumServerPath.Text + " -role " + (runAsHub.Checked ? "hub" : "webdriver -browser browserName=chrome,maxInstances="+ maxInstances.Value.ToString() + " -maxSession "+ maxSession.Value.ToString() + " -hub " + this.seleniumHubAddress.Text) + " -host " + this.localIPAddress.SelectedItem;
+            process.StartInfo.Arguments = "\"-Dwebdriver.chrome.driver=" + this.chromeDrivePath.Text + "\" -jar " + this.seleniumServerPath.Text + " -role " + (runAsHub.Checked ? "hub" : "webdriver -browser browserName=chrome,maxInstances=" + maxInstances.Value.ToString() + " -maxSession " + maxSession.Value.ToString() + " -hub " + this.seleniumHubAddress.Text) + " -host " + this.localIPAddress.SelectedItem;
 
             process.StartInfo.CreateNoWindow = true;
             //process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
@@ -96,7 +96,6 @@ namespace SeleniumNodeRunner.Service
             }
             catch (Exception)
             {
-
                 //MessageBox.Show("Something wrong happened. " + e.Message);
             }
         }
@@ -114,7 +113,6 @@ namespace SeleniumNodeRunner.Service
             }
             catch (Exception)
             {
-
                 //MessageBox.Show("Something wrong happened. " + e.Message);
             }
 
