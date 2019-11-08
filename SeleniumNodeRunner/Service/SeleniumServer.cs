@@ -16,15 +16,21 @@ namespace SeleniumNodeRunner.Service
         private CheckBox runAsHub;
         private NumericUpDown maxSession;
         private NumericUpDown maxInstances;
+		private NumericUpDown timeout;
+		private NumericUpDown browserTimeout;
+		private NumericUpDown cleanUpCycle;
 
-        public SeleniumServer(
+		public SeleniumServer(
             TextBox chromeDrivePath,
             TextBox seleniumServerPath,
             TextBox seleniumHubAddress,
             ComboBox localIPAddress,
             CheckBox runAsHub,
             NumericUpDown maxSession,
-            NumericUpDown maxInstances
+            NumericUpDown maxInstances,
+			NumericUpDown browserTimeout,
+			NumericUpDown timeout,
+			NumericUpDown cleanUpCycle
         )
         {
             this.chromeDrivePath = chromeDrivePath;
@@ -34,7 +40,10 @@ namespace SeleniumNodeRunner.Service
             this.runAsHub = runAsHub;
             this.maxSession = maxSession;
             this.maxInstances = maxInstances;
-        }
+			this.browserTimeout = browserTimeout;
+			this.timeout = timeout;
+			this.cleanUpCycle = cleanUpCycle;
+		}
 
         public void Run(Action<string> callback)
         {
@@ -43,7 +52,7 @@ namespace SeleniumNodeRunner.Service
             process.StartInfo.RedirectStandardOutput = true;
             process.StartInfo.RedirectStandardError = true;
 
-            process.StartInfo.Arguments = "\"-Dwebdriver.chrome.driver=" + this.chromeDrivePath.Text + "\" -jar " + this.seleniumServerPath.Text + " -role " + (runAsHub.Checked ? "hub" : "webdriver -browser browserName=chrome,maxInstances=" + maxInstances.Value.ToString() + " -maxSession " + maxSession.Value.ToString() + " -hub " + this.seleniumHubAddress.Text) + " -host " + this.localIPAddress.SelectedItem;
+            process.StartInfo.Arguments = "\"-Dwebdriver.chrome.driver=" + this.chromeDrivePath.Text + "\" -jar " + this.seleniumServerPath.Text + " -role " + (runAsHub.Checked ? "hub -timeout "+ timeout.Value.ToString() + " -browserTimeout "+ browserTimeout.Value.ToString() + " -cleanUpCycle "+ cleanUpCycle.Value.ToString() : "webdriver -browser browserName=chrome,maxInstances=" + maxInstances.Value.ToString() + " -maxSession " + maxSession.Value.ToString() + " -hub " + this.seleniumHubAddress.Text) + " -host " + this.localIPAddress.SelectedItem;
 
             process.StartInfo.CreateNoWindow = true;
             //process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
