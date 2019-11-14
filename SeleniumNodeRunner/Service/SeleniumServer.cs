@@ -52,7 +52,7 @@ namespace SeleniumNodeRunner.Service
             process.StartInfo.RedirectStandardOutput = true;
             process.StartInfo.RedirectStandardError = true;
 
-            process.StartInfo.Arguments = "\"-Dwebdriver.chrome.driver=" + this.chromeDrivePath.Text + "\" -jar " + this.seleniumServerPath.Text + " -role " + (runAsHub.Checked ? "hub -timeout "+ timeout.Value.ToString() + " -browserTimeout "+ browserTimeout.Value.ToString() + " -cleanUpCycle "+ cleanUpCycle.Value.ToString() : "webdriver -browser browserName=chrome,maxInstances=" + maxInstances.Value.ToString() + " -maxSession " + maxSession.Value.ToString() + " -hub " + this.seleniumHubAddress.Text) + " -host " + this.localIPAddress.SelectedItem;
+            process.StartInfo.Arguments = "\"-Dwebdriver.chrome.driver=" + this.chromeDrivePath.Text + "\" -jar " + this.seleniumServerPath.Text + " -role " + (runAsHub.Checked ? "hub -timeout "+ timeout.Value.ToString() + " -browserTimeout "+ browserTimeout.Value.ToString() + " -cleanUpCycle "+ cleanUpCycle.Value.ToString() : "webdriver -browser browserName=chrome,maxInstances=" + maxInstances.Value.ToString() + " -maxSession " + maxSession.Value.ToString() + " -hub " + this.seleniumHubAddress.Text + "/grid/register/") + " -host " + this.localIPAddress.SelectedItem;
 
             process.StartInfo.CreateNoWindow = true;
             //process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;

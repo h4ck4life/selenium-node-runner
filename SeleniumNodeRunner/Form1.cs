@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Net;
+using System.Net.Http;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
@@ -29,20 +30,44 @@ namespace SeleniumNodeRunner
 
         private bool checkIPFamily(string hubAddress, string clientAddress)
         {
-            var pattern = @"\d+";
-            Regex rgx = new Regex(pattern);
-
-            var hubAddressMatches = rgx.Matches(hubAddress);
-            var clientAddressMatches = rgx.Matches(clientAddress);
-
-            if(hubAddressMatches.Count > 0 && clientAddressMatches.Count > 0)
+            if (checkBox1.Checked == false)
             {
-                if(hubAddressMatches[0].ToString().Equals(clientAddressMatches[0].ToString()))
+                var pattern = @"\d+";
+                Regex rgx = new Regex(pattern);
+
+                var hubAddressMatches = rgx.Matches(hubAddress);
+                var clientAddressMatches = rgx.Matches(clientAddress);
+
+                if (hubAddressMatches.Count > 0 && clientAddressMatches.Count > 0)
+                {
+                    if (hubAddressMatches[0].ToString().Equals(clientAddressMatches[0].ToString()))
+                    {
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private async System.Threading.Tasks.Task<bool> checkIfThereIsActiveTestsAreRunningAsync(String URL)
+        {
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri("http://" + URL + ":4444/");
+            var response = await client.GetAsync("grid/api/hub");
+            if (response.IsSuccessStatusCode)
+            {
+                GridHub gridHub = await response.Content.ReadAsAsync<GridHub>();
+                if(gridHub.SlotCounts.Free != gridHub.SlotCounts.Total)
                 {
                     return true;
                 }
             }
-            
+
             return false;
         }
 
@@ -398,6 +423,11 @@ namespace SeleniumNodeRunner
         private void label8_Click(object sender, EventArgs e)
         {
             System.Diagnostics.Process.Start("https://github.com/h4ck4life/selenium-node-runner/releases");
+        }
+
+        private void checkBox3_CheckedChanged(object sender, EventArgs e)
+        {
+            checkIfThereIsActiveTestsAreRunningAsync(comboBox1.SelectedValue.ToString());
         }
     }
 
