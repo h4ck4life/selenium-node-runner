@@ -6,394 +6,423 @@ using System.Drawing;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace SeleniumNodeRunner
 {
-	public partial class Form1 : Form
-	{
-		SeleniumServer seleniumServer;
-		bool InputFormToggle = true;
-		ContextMenu CtxMenuNotifyIcon;
+    public partial class Form1 : Form
+    {
+        SeleniumServer seleniumServer;
+        bool InputFormToggle = true;
+        ContextMenu CtxMenuNotifyIcon;
 
-		public Form1()
-		{
-			InitializeComponent();
-		}
+        public Form1()
+        {
+            InitializeComponent();
+        }
 
-		private void checkForUpdate()
-		{
+        private void checkForUpdate()
+        {
 
-		}
+        }
 
-		private void Form1_Load(object sender, EventArgs e)
-		{
-			NativeMethods.PreventSleep();
-			LoadSettings();
-			LoadLocalIPAddress();
-			DisplayAppVersion();
-			toggle_enabled_hubAddress();
+        private bool checkIPFamily(string hubAddress, string clientAddress)
+        {
+            var pattern = @"\d+";
+            Regex rgx = new Regex(pattern);
 
-			CtxMenuNotifyIcon = new ContextMenu();
-			CtxMenuNotifyIcon.MenuItems.Add("Open", (s, ev) =>
-			{
-				this.Show();
-				WindowState = FormWindowState.Normal;
-			});
-			CtxMenuNotifyIcon.MenuItems.Add("Exit", (s, ev) => Application.Exit());
+            var hubAddressMatches = rgx.Matches(hubAddress);
+            var clientAddressMatches = rgx.Matches(clientAddress);
 
-			seleniumServer = new SeleniumServer(
-				txtBox_ChromeDriver,
-				txtBox_seleniumjar,
-				txtBox_hubaddress,
-				comboBox1,
-				checkBox1,
-				numericUpDown1,
-				numericUpDown2,
-				numericUpDown3,
-				numericUpDown4,
-				numericUpDown5
-			);
+            if(hubAddressMatches.Count > 0 && clientAddressMatches.Count > 0)
+            {
+                if(hubAddressMatches[0].ToString().Equals(clientAddressMatches[0].ToString()))
+                {
+                    return true;
+                }
+            }
+            
+            return false;
+        }
 
-			if (checkBox2.Checked)
-			{
-				WindowState = FormWindowState.Minimized;
-				RunTheSelenium(button1);
-			}
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            NativeMethods.PreventSleep();
+            LoadSettings();
+            LoadLocalIPAddress();
+            DisplayAppVersion();
+            toggle_enabled_hubAddress();
 
-			try
-			{
-				checkForUpdate();
-			}
-			catch (Exception) { }
-		}
+            CtxMenuNotifyIcon = new ContextMenu();
+            CtxMenuNotifyIcon.MenuItems.Add("Open", (s, ev) =>
+            {
+                this.Show();
+                WindowState = FormWindowState.Normal;
+            });
+            CtxMenuNotifyIcon.MenuItems.Add("Exit", (s, ev) => Application.Exit());
 
-		protected override void OnFormClosing(FormClosingEventArgs e)
-		{
-			if (checkBox3.Checked == false)
-			{
-				DialogResult result1 = MessageBox.Show("Make sure no tests are running before exit. Do you want to proceed?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-				if (result1 == DialogResult.Yes)
-				{
-					notifyIcon1.Dispose();
-					seleniumServer.Stop(button1.Text);
-				}
-				else
-				{
-					e.Cancel = true;
-				}
-			}
-		}
+            seleniumServer = new SeleniumServer(
+                txtBox_ChromeDriver,
+                txtBox_seleniumjar,
+                txtBox_hubaddress,
+                comboBox1,
+                checkBox1,
+                numericUpDown1,
+                numericUpDown2,
+                numericUpDown3,
+                numericUpDown4,
+                numericUpDown5
+            );
 
-		private void LoadSettings()
-		{
-			txtBox_ChromeDriver.Text = Properties.Settings.Default.ChromeDriver;
-			txtBox_seleniumjar.Text = Properties.Settings.Default.SeleniumJar;
-			txtBox_hubaddress.Text = Properties.Settings.Default.HubAddress;
+            if (checkBox2.Checked)
+            {
+                if(checkIPFamily(txtBox_hubaddress.Text, comboBox1.SelectedValue.ToString()))
+                {
+                    WindowState = FormWindowState.Minimized;
+                    RunTheSelenium(button1);
+                }
+                else
+                {
+                    notifyIcon1.Visible = true;
+                    notifyIcon1.ContextMenu = CtxMenuNotifyIcon;
+                    notifyIcon1.ShowBalloonTip(500, "Selenium Node Runner", "Not able to start the client. Please select same machine IP address range with Hub IP address - " + comboBox1.SelectedValue.ToString(), ToolTipIcon.Warning);
+                }
+            }
 
-			checkBox1.Checked = Properties.Settings.Default.RunAsHub;
-			checkBox2.Checked = Properties.Settings.Default.AutoRun;
+            try
+            {
+                checkForUpdate();
+            }
+            catch (Exception) { }
+        }
 
-			numericUpDown1.Value = decimal.Parse(Properties.Settings.Default.MaxSession);
-			numericUpDown2.Value = decimal.Parse(Properties.Settings.Default.MaxInstances);
-		}
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            if (checkBox3.Checked == false)
+            {
+                DialogResult result1 = MessageBox.Show("Make sure no tests are running before exit. Do you want to proceed?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (result1 == DialogResult.Yes)
+                {
+                    notifyIcon1.Dispose();
+                    seleniumServer.Stop(button1.Text);
+                }
+                else
+                {
+                    e.Cancel = true;
+                }
+            }
+        }
 
-		private void DisplayAppVersion()
-		{
-			label8.Text = "Version " + Application.ProductVersion;
-		}
+        private void LoadSettings()
+        {
+            txtBox_ChromeDriver.Text = Properties.Settings.Default.ChromeDriver;
+            txtBox_seleniumjar.Text = Properties.Settings.Default.SeleniumJar;
+            txtBox_hubaddress.Text = Properties.Settings.Default.HubAddress;
 
-		private bool SaveSettings()
-		{
-			if (txtBox_ChromeDriver.Text == "" || txtBox_seleniumjar.Text == "" || (checkBox1.Checked == false && txtBox_hubaddress.Text == ""))
-			{
-				MessageBox.Show("Please set all the configurations",
-					"Info",
-					MessageBoxButtons.OK,
-					MessageBoxIcon.Information);
-				txtBox_ChromeDriver.Focus();
-				return false;
-			}
+            checkBox1.Checked = Properties.Settings.Default.RunAsHub;
+            checkBox2.Checked = Properties.Settings.Default.AutoRun;
 
-			Properties.Settings.Default.ChromeDriver = txtBox_ChromeDriver.Text;
-			Properties.Settings.Default.SeleniumJar = txtBox_seleniumjar.Text;
-			Properties.Settings.Default.HubAddress = txtBox_hubaddress.Text;
+            numericUpDown1.Value = decimal.Parse(Properties.Settings.Default.MaxSession);
+            numericUpDown2.Value = decimal.Parse(Properties.Settings.Default.MaxInstances);
+        }
 
-			Properties.Settings.Default.RunAsHub = checkBox1.Checked;
-			Properties.Settings.Default.AutoRun = checkBox2.Checked;
+        private void DisplayAppVersion()
+        {
+            label8.Text = "Version " + Application.ProductVersion;
+        }
 
-			Properties.Settings.Default.MaxInstances = numericUpDown1.Value.ToString();
-			Properties.Settings.Default.MaxSession = numericUpDown2.Value.ToString();
+        private bool SaveSettings()
+        {
+            if (txtBox_ChromeDriver.Text == "" || txtBox_seleniumjar.Text == "" || (checkBox1.Checked == false && txtBox_hubaddress.Text == ""))
+            {
+                MessageBox.Show("Please set all the configurations",
+                    "Info",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                txtBox_ChromeDriver.Focus();
+                return false;
+            }
 
-			Properties.Settings.Default.Save();
+            Properties.Settings.Default.ChromeDriver = txtBox_ChromeDriver.Text;
+            Properties.Settings.Default.SeleniumJar = txtBox_seleniumjar.Text;
+            Properties.Settings.Default.HubAddress = txtBox_hubaddress.Text;
 
-			return true;
-		}
+            Properties.Settings.Default.RunAsHub = checkBox1.Checked;
+            Properties.Settings.Default.AutoRun = checkBox2.Checked;
 
-		private void LoadLocalIPAddress()
-		{
-			List<string> items = new List<string>();
+            Properties.Settings.Default.MaxInstances = numericUpDown1.Value.ToString();
+            Properties.Settings.Default.MaxSession = numericUpDown2.Value.ToString();
 
-			IPAddress[] localIPs = Dns.GetHostAddresses(Dns.GetHostName());
-			foreach (IPAddress addr in localIPs)
-			{
-				if (addr.AddressFamily == AddressFamily.InterNetwork)
-				{
-					items.Add(addr.ToString());
-				}
-			}
+            Properties.Settings.Default.Save();
 
-			comboBox1.DataSource = items;
-		}
+            return true;
+        }
 
-		private void InputFormsToggle()
-		{
-			if (InputFormToggle == true)
-			{
-				txtBox_ChromeDriver.Enabled = false;
-				txtBox_hubaddress.Enabled = false;
-				txtBox_seleniumjar.Enabled = false;
+        private void LoadLocalIPAddress()
+        {
+            List<string> items = new List<string>();
 
-				comboBox1.Enabled = false;
+            IPAddress[] localIPs = Dns.GetHostAddresses(Dns.GetHostName());
+            foreach (IPAddress addr in localIPs)
+            {
+                if (addr.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    items.Add(addr.ToString());
+                }
+            }
 
-				checkBox1.Enabled = false;
-				//checkBox2.Enabled = false;
+            comboBox1.DataSource = items;
+        }
 
-				InputFormToggle = false;
+        private void InputFormsToggle()
+        {
+            if (InputFormToggle == true)
+            {
+                txtBox_ChromeDriver.Enabled = false;
+                txtBox_hubaddress.Enabled = false;
+                txtBox_seleniumjar.Enabled = false;
 
-				numericUpDown1.Enabled = false;
-				numericUpDown2.Enabled = false;
-				numericUpDown3.Enabled = false;
-				numericUpDown4.Enabled = false;
-				numericUpDown5.Enabled = false;
-			}
-			else
-			{
-				txtBox_ChromeDriver.Enabled = true;
-				txtBox_hubaddress.Enabled = true;
-				txtBox_seleniumjar.Enabled = true;
+                comboBox1.Enabled = false;
 
-				comboBox1.Enabled = true;
+                checkBox1.Enabled = false;
+                //checkBox2.Enabled = false;
 
-				checkBox1.Enabled = true;
-				//checkBox2.Enabled = true;
+                InputFormToggle = false;
 
-				InputFormToggle = true;
+                numericUpDown1.Enabled = false;
+                numericUpDown2.Enabled = false;
+                numericUpDown3.Enabled = false;
+                numericUpDown4.Enabled = false;
+                numericUpDown5.Enabled = false;
+            }
+            else
+            {
+                txtBox_ChromeDriver.Enabled = true;
+                txtBox_hubaddress.Enabled = true;
+                txtBox_seleniumjar.Enabled = true;
 
-				numericUpDown1.Enabled = true;
-				numericUpDown2.Enabled = true;
-				numericUpDown3.Enabled = true;
-				numericUpDown4.Enabled = true;
-				numericUpDown5.Enabled = true;
-			}
+                comboBox1.Enabled = true;
 
-		}
+                checkBox1.Enabled = true;
+                //checkBox2.Enabled = true;
 
-		private void Form1_Resize(object sender, EventArgs e)
-		{
-			if (FormWindowState.Minimized == this.WindowState)
-			{
-				notifyIcon1.Visible = true;
-				notifyIcon1.ContextMenu = CtxMenuNotifyIcon;
-				notifyIcon1.ShowBalloonTip(500, "Selenium Node Runner", "Selenium Node Runner in background", ToolTipIcon.Info);
-				this.Hide();
-			}
+                InputFormToggle = true;
 
-			else if (FormWindowState.Normal == this.WindowState)
-			{
-				notifyIcon1.Visible = false;
-			}
-		}
+                numericUpDown1.Enabled = true;
+                numericUpDown2.Enabled = true;
+                numericUpDown3.Enabled = true;
+                numericUpDown4.Enabled = true;
+                numericUpDown5.Enabled = true;
+            }
 
-		private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
-		{
-			this.Show();
-			WindowState = FormWindowState.Normal;
-		}
+        }
 
-		private void ShowOnlineStatus()
-		{
-			toolStripStatusLabel1.Text = "✅ Online";
-			toolStripStatusLabel1.ForeColor = Color.Green;
-		}
+        private void Form1_Resize(object sender, EventArgs e)
+        {
+            if (FormWindowState.Minimized == this.WindowState)
+            {
+                notifyIcon1.Visible = true;
+                notifyIcon1.ContextMenu = CtxMenuNotifyIcon;
+                notifyIcon1.ShowBalloonTip(500, "Selenium Node Runner", "Selenium Node Runner in background", ToolTipIcon.Info);
+                this.Hide();
+            }
 
-		private void ShowOfflineStatus()
-		{
-			toolStripStatusLabel1.Text = "🔴 Offline";
-			toolStripStatusLabel1.ForeColor = Color.Red;
-		}
+            else if (FormWindowState.Normal == this.WindowState)
+            {
+                notifyIcon1.Visible = false;
+            }
+        }
 
-		private void RunTheSelenium(Button btnStartStop)
-		{
-			int notificationCounter = 0;
+        private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            this.Show();
+            WindowState = FormWindowState.Normal;
+        }
 
-			tabControl1.SelectTab(2);
+        private void ShowOnlineStatus()
+        {
+            toolStripStatusLabel1.Text = "✅ Online";
+            toolStripStatusLabel1.ForeColor = Color.Green;
+        }
 
-			seleniumServer.Run((output) =>
-			{
-				if (output != null)
-				{
-					textBox1.Invoke((Action)delegate
-					{
-						if (output.Contains("Selenium Grid hub is up and running") || output.Contains("registered"))
-						{
-							ShowOnlineStatus();
-						}
-						if (output.Contains("Couldn't register this node"))
-						{
-							ShowOfflineStatus();
-							if (notificationCounter == 0)
-							{
-								notifyIcon1.ShowBalloonTip(500, "Selenium Hub is down", output, ToolTipIcon.Warning);
-								notificationCounter = 30;
-							}
-							else
-							{
-								notificationCounter--;
-							}
+        private void ShowOfflineStatus()
+        {
+            toolStripStatusLabel1.Text = "🔴 Offline";
+            toolStripStatusLabel1.ForeColor = Color.Red;
+        }
 
-						}
-						if (output.Contains("Removing session") && checkBox3.Checked)
-						{
-							seleniumServer.Stop();
-							Application.Exit();
-						}
-						textBox1.AppendText(output);
-						textBox1.AppendText(Environment.NewLine);
-					}
-				);
-				}
-			});
+        private void RunTheSelenium(Button btnStartStop)
+        {
+            int notificationCounter = 0;
 
-			btnStartStop.Text = "Stop";
+            tabControl1.SelectTab(2);
 
-			InputFormsToggle();
-		}
+            seleniumServer.Run((output) =>
+            {
+                if (output != null)
+                {
+                    textBox1.Invoke((Action)delegate
+                    {
+                        if (output.Contains("Selenium Grid hub is up and running") || output.Contains("registered"))
+                        {
+                            ShowOnlineStatus();
+                        }
+                        if (output.Contains("Couldn't register this node"))
+                        {
+                            ShowOfflineStatus();
+                            if (notificationCounter == 0)
+                            {
+                                notifyIcon1.ShowBalloonTip(500, "Selenium Hub is down", output, ToolTipIcon.Warning);
+                                notificationCounter = 30;
+                            }
+                            else
+                            {
+                                notificationCounter--;
+                            }
 
-		private void button1_Click(object sender, EventArgs e)
-		{
-			Button btnStartStop = (Button)sender;
+                        }
+                        if (output.Contains("Removing session") && checkBox3.Checked)
+                        {
+                            seleniumServer.Stop();
+                            Application.Exit();
+                        }
+                        textBox1.AppendText(output);
+                        textBox1.AppendText(Environment.NewLine);
+                    }
+                );
+                }
+            });
 
-			if (btnStartStop.Text == "Start")
-			{
-				if (SaveSettings())
-				{
-					RunTheSelenium(btnStartStop);
-				}
-			}
-			else if (btnStartStop.Text == "Stop")
-			{
-				seleniumServer.Stop();
+            btnStartStop.Text = "Stop";
 
-				btnStartStop.Text = "Start";
-				ShowOfflineStatus();
+            InputFormsToggle();
+        }
 
-				textBox1.AppendText(Environment.NewLine);
-				textBox1.AppendText("==================STOPPED===================");
-				textBox1.AppendText(Environment.NewLine);
-				textBox1.AppendText(Environment.NewLine);
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Button btnStartStop = (Button)sender;
 
-				InputFormsToggle();
-			}
-			else { }
-		}
+            if (btnStartStop.Text == "Start")
+            {
+                if (SaveSettings())
+                {
+                    RunTheSelenium(btnStartStop);
+                }
+            }
+            else if (btnStartStop.Text == "Stop")
+            {
+                seleniumServer.Stop();
 
-		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-		{
-			System.Diagnostics.Process.Start("https://chromedriver.chromium.org/downloads");
-		}
+                btnStartStop.Text = "Start";
+                ShowOfflineStatus();
 
-		private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-		{
-			System.Diagnostics.Process.Start("http://selenium-release.storage.googleapis.com/index.html");
-		}
+                textBox1.AppendText(Environment.NewLine);
+                textBox1.AppendText("==================STOPPED===================");
+                textBox1.AppendText(Environment.NewLine);
+                textBox1.AppendText(Environment.NewLine);
 
-		private void checkBox1_CheckedChanged(object sender, EventArgs e)
-		{
-			CheckBox checkbox1_sender = (CheckBox)sender;
+                InputFormsToggle();
+            }
+            else { }
+        }
 
-			if (checkbox1_sender.Checked)
-			{
-				txtBox_hubaddress.Enabled = false;
-			}
-			else
-			{
-				txtBox_hubaddress.Enabled = true;
-			}
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://chromedriver.chromium.org/downloads");
+        }
 
-			toggle_enabled_hubAddress();
-		}
+        private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://selenium-release.storage.googleapis.com/index.html");
+        }
 
-		private void RegisterInStartup(bool isChecked)
-		{
-			RegistryKey registryKey = Registry.CurrentUser.OpenSubKey
-					("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-			if (isChecked)
-			{
-				registryKey.SetValue("ApplicationName", Application.ExecutablePath);
-			}
-			else
-			{
-				registryKey.DeleteValue("ApplicationName");
-			}
-		}
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox checkbox1_sender = (CheckBox)sender;
 
-		private void toggle_enabled_hubAddress()
-		{
-			if (checkBox1.Checked)
-			{
-				txtBox_hubaddress.Enabled = false;
-				this.Text = "Server - Selenium Node Runner";
-			}
-			else
-			{
-				txtBox_hubaddress.Enabled = true;
-				this.Text = "Client - Selenium Node Runner";
-			}
-		}
+            if (checkbox1_sender.Checked)
+            {
+                txtBox_hubaddress.Enabled = false;
+            }
+            else
+            {
+                txtBox_hubaddress.Enabled = true;
+            }
 
-		private void linkLabel3_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-		{
-			System.Diagnostics.Process.Start("https://github.com/SeleniumHQ/selenium/wiki/Grid2#optional-parameters");
-		}
+            toggle_enabled_hubAddress();
+        }
 
-		private void checkBox2_CheckedChanged(object sender, EventArgs e)
-		{
-			CheckBox autoStart = (CheckBox)sender;
-			RegisterInStartup(autoStart.Checked);
+        private void RegisterInStartup(bool isChecked)
+        {
+            RegistryKey registryKey = Registry.CurrentUser.OpenSubKey
+                    ("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+            if (isChecked)
+            {
+                registryKey.SetValue("ApplicationName", Application.ExecutablePath);
+            }
+            else
+            {
+                registryKey.DeleteValue("ApplicationName");
+            }
+        }
 
-			Properties.Settings.Default.AutoRun = checkBox2.Checked;
-			Properties.Settings.Default.Save();
-		}
+        private void toggle_enabled_hubAddress()
+        {
+            if (checkBox1.Checked)
+            {
+                txtBox_hubaddress.Enabled = false;
+                this.Text = "Server - Selenium Node Runner";
+            }
+            else
+            {
+                txtBox_hubaddress.Enabled = true;
+                this.Text = "Client - Selenium Node Runner";
+            }
+        }
 
-		private void label8_Click(object sender, EventArgs e)
-		{
-			System.Diagnostics.Process.Start("https://github.com/h4ck4life/selenium-node-runner/releases");
-		}
-	}
+        private void linkLabel3_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/SeleniumHQ/selenium/wiki/Grid2#optional-parameters");
+        }
 
-	internal static class NativeMethods
-	{
-		public static void PreventSleep()
-		{
-			SetThreadExecutionState(ExecutionState.EsContinuous | ExecutionState.EsSystemRequired);
-		}
+        private void checkBox2_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox autoStart = (CheckBox)sender;
+            RegisterInStartup(autoStart.Checked);
 
-		public static void AllowSleep()
-		{
-			SetThreadExecutionState(ExecutionState.EsContinuous);
-		}
+            Properties.Settings.Default.AutoRun = checkBox2.Checked;
+            Properties.Settings.Default.Save();
+        }
 
-		[DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-		private static extern ExecutionState SetThreadExecutionState(ExecutionState esFlags);
+        private void label8_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/h4ck4life/selenium-node-runner/releases");
+        }
+    }
 
-		[FlagsAttribute]
-		private enum ExecutionState : uint
-		{
-			EsAwaymodeRequired = 0x00000040,
-			EsContinuous = 0x80000000,
-			EsDisplayRequired = 0x00000002,
-			EsSystemRequired = 0x00000001
-		}
-	}
+    internal static class NativeMethods
+    {
+        public static void PreventSleep()
+        {
+            SetThreadExecutionState(ExecutionState.EsContinuous | ExecutionState.EsSystemRequired);
+        }
+
+        public static void AllowSleep()
+        {
+            SetThreadExecutionState(ExecutionState.EsContinuous);
+        }
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern ExecutionState SetThreadExecutionState(ExecutionState esFlags);
+
+        [FlagsAttribute]
+        private enum ExecutionState : uint
+        {
+            EsAwaymodeRequired = 0x00000040,
+            EsContinuous = 0x80000000,
+            EsDisplayRequired = 0x00000002,
+            EsSystemRequired = 0x00000001
+        }
+    }
 }
