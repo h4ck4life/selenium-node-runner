@@ -40,7 +40,7 @@ namespace SeleniumNodeRunner.Service
             this.runAsHub = runAsHub;
             this.maxSession = maxSession;
             this.maxInstances = maxInstances;
-			this.browserTimeout = browserTimeout;
+            this.browserTimeout = browserTimeout;
 			this.timeout = timeout;
 			this.cleanUpCycle = cleanUpCycle;
 		}

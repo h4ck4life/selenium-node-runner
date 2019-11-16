@@ -9,6 +9,7 @@ using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using System.Threading.Tasks;
 
 namespace SeleniumNodeRunner
 {
@@ -54,21 +55,31 @@ namespace SeleniumNodeRunner
             return false;
         }
 
-        private async System.Threading.Tasks.Task<bool> checkIfThereIsActiveTestsAreRunningAsync(String URL)
+        private async Task<bool> checkIfThereIsActiveTestsAreRunningAsync(String URL)
         {
-            HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri("http://" + URL + ":4444/");
-            var response = await client.GetAsync("grid/api/hub");
-            if (response.IsSuccessStatusCode)
+            try
             {
-                GridHub gridHub = await response.Content.ReadAsAsync<GridHub>();
-                if(gridHub.SlotCounts.Free != gridHub.SlotCounts.Total)
+                HttpClient client = new HttpClient
                 {
-                    return true;
+                    BaseAddress = new Uri(URL),
+                    Timeout = TimeSpan.FromSeconds(15)
+                };
+                var response = await client.GetAsync("grid/api/hub");
+                if (response.IsSuccessStatusCode)
+                {
+                    GridHub gridHub = await response.Content.ReadAsAsync<GridHub>();
+                    if (gridHub.SlotCounts.Free != gridHub.SlotCounts.Total)
+                    {
+                        return true;
+                    }
                 }
+                return false;
             }
+            catch (Exception)
+            {
 
-            return false;
+                return false;
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -124,18 +135,41 @@ namespace SeleniumNodeRunner
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
-            if (checkBox3.Checked == false)
+            if (button1.Text == "Stop")
             {
-                DialogResult result1 = MessageBox.Show("Make sure no tests are running before exit. Do you want to proceed?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                if (result1 == DialogResult.Yes)
+                Task<bool> isTestRunning = Task.Run(() =>
+                {
+                    Task<bool> task = checkIfThereIsActiveTestsAreRunningAsync(txtBox_hubaddress.Text);
+                    Console.WriteLine(task.Result);
+                    return task;
+                });
+
+                isTestRunning.Wait();
+
+                if(isTestRunning.Result)
+                {
+                    DialogResult result1 = MessageBox.Show("There are active tests still running. Closing the application will interrupt the results.", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+                    if (result1 == DialogResult.Yes)
+                    {
+                        notifyIcon1.Dispose();
+                        seleniumServer.Stop(button1.Text);
+                    }
+                    else
+                    {
+                        e.Cancel = true;
+                    }
+                }
+                else
                 {
                     notifyIcon1.Dispose();
                     seleniumServer.Stop(button1.Text);
                 }
-                else
-                {
-                    e.Cancel = true;
-                }
+            }
+            else
+            {
+                notifyIcon1.Dispose();
+                seleniumServer.Stop(button1.Text);
             }
         }
 
@@ -346,17 +380,33 @@ namespace SeleniumNodeRunner
             }
             else if (btnStartStop.Text == "Stop")
             {
-                seleniumServer.Stop();
+                Task<bool> isTestRunning = Task.Run(() =>
+                {
+                    Task<bool> task = checkIfThereIsActiveTestsAreRunningAsync(txtBox_hubaddress.Text);
+                    Console.WriteLine(task.Result);
+                    return task;
+                });
 
-                btnStartStop.Text = "Start";
-                ShowOfflineStatus();
+                isTestRunning.Wait();
 
-                textBox1.AppendText(Environment.NewLine);
-                textBox1.AppendText("==================STOPPED===================");
-                textBox1.AppendText(Environment.NewLine);
-                textBox1.AppendText(Environment.NewLine);
+                if (isTestRunning.Result)
+                {
+                    DialogResult result1 = MessageBox.Show("There are active tests still running. Stopping the client will interrupt the results.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                else
+                {
+                    seleniumServer.Stop();
 
-                InputFormsToggle();
+                    btnStartStop.Text = "Start";
+                    ShowOfflineStatus();
+
+                    textBox1.AppendText(Environment.NewLine);
+                    textBox1.AppendText("==================STOPPED===================");
+                    textBox1.AppendText(Environment.NewLine);
+                    textBox1.AppendText(Environment.NewLine);
+
+                    InputFormsToggle();
+                }
             }
             else { }
         }
@@ -436,7 +486,7 @@ namespace SeleniumNodeRunner
 
         private void checkBox3_CheckedChanged(object sender, EventArgs e)
         {
-            checkIfThereIsActiveTestsAreRunningAsync(comboBox1.SelectedValue.ToString());
+            
         }
     }
 
