@@ -134,7 +134,7 @@ namespace SeleniumNodeRunner
                 this.Show();
                 WindowState = FormWindowState.Normal;
             });
-            CtxMenuNotifyIcon.MenuItems.Add("Exit", (s, ev) => Application.Exit());
+            //CtxMenuNotifyIcon.MenuItems.Add("Exit", (s, ev) => Application.Exit());
 
             seleniumServer = new SeleniumServer(
                 txtBox_ChromeDriver,
