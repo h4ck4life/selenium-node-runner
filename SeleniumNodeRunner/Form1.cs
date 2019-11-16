@@ -330,9 +330,18 @@ namespace SeleniumNodeRunner
 
             if (btnStartStop.Text == "Start")
             {
-                if (SaveSettings())
+                if (checkIPFamily(txtBox_hubaddress.Text, comboBox1.SelectedValue.ToString()))
                 {
-                    RunTheSelenium(btnStartStop);
+                    if (SaveSettings())
+                    {
+                        RunTheSelenium(btnStartStop);
+                    }
+                }
+                else
+                {
+                    notifyIcon1.Visible = true;
+                    notifyIcon1.ContextMenu = CtxMenuNotifyIcon;
+                    notifyIcon1.ShowBalloonTip(500, "Selenium Node Runner", "Not able to start the client. Please select same machine IP address range with Hub IP address - " + comboBox1.SelectedValue.ToString(), ToolTipIcon.Warning);
                 }
             }
             else if (btnStartStop.Text == "Stop")
