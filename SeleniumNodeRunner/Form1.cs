@@ -140,7 +140,6 @@ namespace SeleniumNodeRunner
                 Task<bool> isTestRunning = Task.Run(() =>
                 {
                     Task<bool> task = checkIfThereIsActiveTestsAreRunningAsync(txtBox_hubaddress.Text);
-                    Console.WriteLine(task.Result);
                     return task;
                 });
 
@@ -274,7 +273,6 @@ namespace SeleniumNodeRunner
                 numericUpDown4.Enabled = true;
                 numericUpDown5.Enabled = true;
             }
-
         }
 
         private void Form1_Resize(object sender, EventArgs e)
@@ -383,7 +381,6 @@ namespace SeleniumNodeRunner
                 Task<bool> isTestRunning = Task.Run(() =>
                 {
                     Task<bool> task = checkIfThereIsActiveTestsAreRunningAsync(txtBox_hubaddress.Text);
-                    Console.WriteLine(task.Result);
                     return task;
                 });
 

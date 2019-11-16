@@ -64,8 +64,10 @@ namespace SeleniumNodeRunner.Service
             };
             process.OutputDataReceived += Process_OutputDataReceived;
 
-            worker = new BackgroundWorker();
-            worker.WorkerSupportsCancellation = true;
+            worker = new BackgroundWorker
+            {
+                WorkerSupportsCancellation = true
+            };
             worker.DoWork += delegate
             {
                 process.Start();
