@@ -257,7 +257,10 @@ namespace SeleniumNodeRunner
             else
             {
                 txtBox_ChromeDriver.Enabled = true;
-                txtBox_hubaddress.Enabled = true;
+                if (!checkBox1.Checked)
+                {
+                    txtBox_hubaddress.Enabled = true;
+                }
                 txtBox_seleniumjar.Enabled = true;
 
                 comboBox1.Enabled = true;
@@ -378,17 +381,34 @@ namespace SeleniumNodeRunner
             }
             else if (btnStartStop.Text == "Stop")
             {
-                Task<bool> isTestRunning = Task.Run(() =>
+                if (!checkBox1.Checked)
                 {
-                    Task<bool> task = checkIfThereIsActiveTestsAreRunningAsync(txtBox_hubaddress.Text);
-                    return task;
-                });
+                    Task<bool> isTestRunning = Task.Run(() =>
+                    {
+                        Task<bool> task = checkIfThereIsActiveTestsAreRunningAsync(txtBox_hubaddress.Text);
+                        return task;
+                    });
 
-                isTestRunning.Wait();
+                    isTestRunning.Wait();
 
-                if (isTestRunning.Result)
-                {
-                    DialogResult result1 = MessageBox.Show("There are active tests still running. Stopping the client will interrupt the results.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    if (isTestRunning.Result)
+                    {
+                        DialogResult result1 = MessageBox.Show("There are active tests still running. Stopping the client will interrupt the results.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                    else
+                    {
+                        seleniumServer.Stop();
+
+                        btnStartStop.Text = "Start";
+                        ShowOfflineStatus();
+
+                        textBox1.AppendText(Environment.NewLine);
+                        textBox1.AppendText("==================STOPPED===================");
+                        textBox1.AppendText(Environment.NewLine);
+                        textBox1.AppendText(Environment.NewLine);
+
+                        InputFormsToggle();
+                    }
                 }
                 else
                 {
