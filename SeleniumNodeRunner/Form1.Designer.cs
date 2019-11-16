@@ -36,6 +36,7 @@ namespace SeleniumNodeRunner
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label12 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
@@ -72,7 +73,7 @@ namespace SeleniumNodeRunner
             this.linkLabel3 = new System.Windows.Forms.LinkLabel();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.label8 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.statusStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -135,6 +136,20 @@ namespace SeleniumNodeRunner
             this.groupBox1.Size = new System.Drawing.Size(675, 235);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label12.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.label12.Location = new System.Drawing.Point(481, 185);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(95, 16);
+            this.label12.TabIndex = 14;
+            this.label12.Text = "Not connected";
+            this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label12.Visible = false;
             // 
             // label5
             // 
@@ -220,10 +235,13 @@ namespace SeleniumNodeRunner
             // 
             // txtBox_hubaddress
             // 
+            this.txtBox_hubaddress.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.txtBox_hubaddress.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.AllUrl;
             this.txtBox_hubaddress.Location = new System.Drawing.Point(19, 142);
             this.txtBox_hubaddress.Name = "txtBox_hubaddress";
             this.txtBox_hubaddress.Size = new System.Drawing.Size(391, 20);
             this.txtBox_hubaddress.TabIndex = 5;
+            this.toolTip1.SetToolTip(this.txtBox_hubaddress, "http://192.168.0.105:4444");
             // 
             // label2
             // 
@@ -236,10 +254,13 @@ namespace SeleniumNodeRunner
             // 
             // txtBox_seleniumjar
             // 
+            this.txtBox_seleniumjar.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.txtBox_seleniumjar.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.FileSystem;
             this.txtBox_seleniumjar.Location = new System.Drawing.Point(19, 94);
             this.txtBox_seleniumjar.Name = "txtBox_seleniumjar";
             this.txtBox_seleniumjar.Size = new System.Drawing.Size(391, 20);
             this.txtBox_seleniumjar.TabIndex = 3;
+            this.toolTip1.SetToolTip(this.txtBox_seleniumjar, "C:\\Users\\Alif\\selenium-server-standalone-3.9.1.jar");
             // 
             // label1
             // 
@@ -253,10 +274,13 @@ namespace SeleniumNodeRunner
             // txtBox_ChromeDriver
             // 
             this.txtBox_ChromeDriver.AllowDrop = true;
+            this.txtBox_ChromeDriver.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.txtBox_ChromeDriver.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.FileSystem;
             this.txtBox_ChromeDriver.Location = new System.Drawing.Point(19, 46);
             this.txtBox_ChromeDriver.Name = "txtBox_ChromeDriver";
             this.txtBox_ChromeDriver.Size = new System.Drawing.Size(391, 20);
             this.txtBox_ChromeDriver.TabIndex = 1;
+            this.toolTip1.SetToolTip(this.txtBox_ChromeDriver, "C:\\Users\\Alif\\chromedriver_win32\\chromedriver.exe");
             // 
             // button1
             // 
@@ -547,19 +571,15 @@ namespace SeleniumNodeRunner
             this.label8.Text = "Version 9.9.9.9";
             this.label8.Click += new System.EventHandler(this.label8_Click);
             // 
-            // label12
+            // toolTip1
             // 
-            this.label12.AutoSize = true;
-            this.label12.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label12.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.label12.Location = new System.Drawing.Point(481, 185);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(95, 16);
-            this.label12.TabIndex = 14;
-            this.label12.Text = "Not connected";
-            this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.label12.Visible = false;
+            this.toolTip1.AutoPopDelay = 20000;
+            this.toolTip1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
+            this.toolTip1.InitialDelay = 100;
+            this.toolTip1.IsBalloon = true;
+            this.toolTip1.ReshowDelay = 100;
+            this.toolTip1.UseAnimation = false;
+            this.toolTip1.UseFading = false;
             // 
             // Form1
             // 
@@ -646,6 +666,7 @@ namespace SeleniumNodeRunner
 		private NumericUpDown numericUpDown5;
 		private Label label11;
         private Label label12;
+        private ToolTip toolTip1;
     }
 }
 
