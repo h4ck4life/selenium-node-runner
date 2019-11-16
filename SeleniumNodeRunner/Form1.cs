@@ -84,15 +84,18 @@ namespace SeleniumNodeRunner
 
         private void GridHubCheckTestTimer(bool toggleSwitch)
         {
-            GridHubStatusTimer.Tick += new EventHandler(TimerEventProcessor);
-            GridHubStatusTimer.Interval = 20000;
-            if (toggleSwitch)
+            if (checkBox1.Checked == false)
             {
-                GridHubStatusTimer.Start();
-            }
-            else
-            {
-                GridHubStatusTimer.Stop();
+                GridHubStatusTimer.Tick += new EventHandler(TimerEventProcessor);
+                GridHubStatusTimer.Interval = 20000;
+                if (toggleSwitch)
+                {
+                    GridHubStatusTimer.Start();
+                }
+                else
+                {
+                    GridHubStatusTimer.Stop();
+                }
             }
         }
 
