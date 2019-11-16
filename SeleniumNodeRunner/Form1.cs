@@ -18,6 +18,7 @@ namespace SeleniumNodeRunner
         SeleniumServer seleniumServer;
         bool InputFormToggle = true;
         ContextMenu CtxMenuNotifyIcon;
+        Timer GridHubStatusTimer = new Timer();
 
         public Form1()
         {
@@ -68,7 +69,7 @@ namespace SeleniumNodeRunner
                 if (response.IsSuccessStatusCode)
                 {
                     GridHub gridHub = await response.Content.ReadAsAsync<GridHub>();
-                    if (gridHub.SlotCounts.Free != gridHub.SlotCounts.Total)
+                    if (gridHub.SlotCounts.Free != gridHub.SlotCounts.Total && gridHub.NewSessionRequestCount == 0)
                     {
                         return true;
                     }
@@ -77,8 +78,45 @@ namespace SeleniumNodeRunner
             }
             catch (Exception)
             {
-
                 return false;
+            }
+        }
+
+        private void GridHubCheckTestTimer(bool toggleSwitch)
+        {
+            GridHubStatusTimer.Tick += new EventHandler(TimerEventProcessor);
+            GridHubStatusTimer.Interval = 20000;
+            if (toggleSwitch)
+            {
+                GridHubStatusTimer.Start();
+            }
+            else
+            {
+                GridHubStatusTimer.Stop();
+            }
+        }
+
+        private void TimerEventProcessor(object sender, EventArgs e)
+        {
+            Task<bool> isTestRunning = Task.Run(() =>
+            {
+                Task<bool> task = checkIfThereIsActiveTestsAreRunningAsync(txtBox_hubaddress.Text);
+                return task;
+            });
+
+            if(isTestRunning.Result)
+            {
+                toolStripStatusLabel1.Text = "⚡ Active tests are running..";
+                //label12.Text = "Active tests running";
+                //label12.BackColor = System.Drawing.Color.WhiteSmoke;
+                //label12.ForeColor = Color.DarkGreen;
+            }
+            else
+            {
+                toolStripStatusLabel1.Text = "✔️ Online";
+                //label12.Text = "No tests running";
+                //label12.BackColor = System.Drawing.Color.WhiteSmoke;
+                //label12.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
             }
         }
 
@@ -125,6 +163,8 @@ namespace SeleniumNodeRunner
                     notifyIcon1.ShowBalloonTip(500, "Selenium Node Runner", "Not able to start the client. Please select same machine IP address range with Hub IP address - " + comboBox1.SelectedValue.ToString(), ToolTipIcon.Warning);
                 }
             }
+
+            GridHubCheckTestTimer(true);
 
             try
             {
@@ -302,13 +342,13 @@ namespace SeleniumNodeRunner
 
         private void ShowOnlineStatus()
         {
-            toolStripStatusLabel1.Text = "✅ Online";
+            toolStripStatusLabel1.Text = "✔️ Online";
             toolStripStatusLabel1.ForeColor = Color.Green;
         }
 
         private void ShowOfflineStatus()
         {
-            toolStripStatusLabel1.Text = "🔴 Offline";
+            toolStripStatusLabel1.Text = "❌ Offline";
             toolStripStatusLabel1.ForeColor = Color.Red;
         }
 
@@ -408,6 +448,7 @@ namespace SeleniumNodeRunner
                         textBox1.AppendText(Environment.NewLine);
 
                         InputFormsToggle();
+                        GridHubCheckTestTimer(false);
                     }
                 }
                 else
@@ -423,6 +464,7 @@ namespace SeleniumNodeRunner
                     textBox1.AppendText(Environment.NewLine);
 
                     InputFormsToggle();
+                    GridHubCheckTestTimer(false);
                 }
             }
             else { }
